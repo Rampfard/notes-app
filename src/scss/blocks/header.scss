@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1.2rem;
+
+  &__controls {
+    display: flex;
+    align-items: center;
+  }
+
+  &__search {
+    margin-right: 1.5rem;
+  }
+}
+

@@ -1,0 +1,96 @@
+.input {
+	background-color: transparent;
+	outline: none;
+	border: none;
+	border-radius: 5px;
+	padding: 0.3rem 0.5rem;
+	color: inherit;
+}
+
+.search-control {
+	display: flex;
+	align-items: center;
+	position: relative;
+}
+
+.search-icon {
+	position: absolute;
+	display: inline-block;
+	right: 0;
+	cursor: pointer;
+	width: 35px;
+	height: 35px;
+	border-radius: 8px;
+	z-index: 5;
+	background-color: transparent;
+	transition: all 0.6s ease-in;
+	&:before,
+	&:after {
+		position: absolute;
+		content: '';
+		transition: all 0.3s ease-in;
+	}
+
+	&:before {
+		height: 20px;
+		width: 20px;
+		border: 2px solid $btnColor;
+		border-radius: 50%;
+		right: 0;
+		top: 5px;
+	}
+
+	&:after {
+		height: 10px;
+		width: 2px;
+		background-color: $btnColor;
+		bottom: 5px;
+		right: 0;
+		transform: rotate(-45deg);
+	}
+}
+
+.search-input {
+	background-color: rgb(184, 184, 184);
+	box-shadow: 0 0 25px 0 $btnColor, 0 20px 25px 0 rgba(0, 0, 0, 0.2);
+	transition: all 0.8s ease-out;
+	opacity: 0;
+	width: 0;
+	cursor: pointer;
+	color: #000;
+	z-index: 10;
+	&:focus {
+		opacity: 1;
+		width: 250px;
+		z-index: 2;
+		cursor: text;
+	}
+}
+
+.search-input:hover ~ .search-icon {
+	&:before,
+	&:after {
+		background-color: #fff;
+	}
+}
+
+.search-input:focus ~ .search-icon {
+	background-color: $mainColor;
+	&:before {
+		border: none;
+		border-radius: 0%;
+		background-color: #fff;
+		width: 20px;
+		height: 2px;
+		top: 17px;
+		right: 7px;
+		transform: rotate(-45deg);
+	}
+
+	&:after {
+		height: 20px;
+		right: 16px;
+		bottom: 6px;
+		background-color: #fff;
+	}
+}

@@ -1,0 +1,44 @@
+// Variables
+
+$mainColor: #1f1d2c;
+$textColor: #d0d0d3;
+$btnColor: #767183;
+$activeColor: #edb853;
+$activeNoteColor: #353545;
+$activeNoteGradient: linear-gradient(25deg, #272433 1%, #353545 90%);
+
+// Fonts
+
+@mixin font($name, $style, $weight, $url) {
+	@font-face {
+		font-family: $name;
+		font-style: $style;
+		font-weight: $weight;
+		src: url($url) format('woff2');
+		font-display: swap;
+	}
+}
+
+@include font(
+	'Monserrat-Regular',
+	normal,
+	400,
+	'../fonts/Montserrat-Regular.woff2'
+);
+
+@include font(
+	'Monserrat-Medium',
+	normal,
+	500,
+	'../fonts/Montserrat-Medium.woff2'
+);
+
+@include font(
+	'Monserrat-SemiBold',
+	normal,
+	600,
+	'../fonts/Montserrat-SemiBold.woff2'
+);
+
+@include font('Poppins-Light', normal, 300, '../fonts/Poppins-Light.woff2');
+@include font('Poppins-Regular', normal, 400, '../fonts/Poppins-Regular.woff2');
