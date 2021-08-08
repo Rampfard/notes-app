@@ -1,63 +1,70 @@
-const elApp = document.querySelector('.main');
-const notes = Array.from(document.querySelectorAll('.note'));
-const elDetail = document.querySelector('.detail');
+import App from './App';
 
-function flipImages(firstEl, lastEl, change) {
-	const firstRect = firstEl.getBoundingClientRect();
-	const lastRect = lastEl.getBoundingClientRect();
+// const flippingCards = () => {
+// 	const elApp = document.querySelector('.main');
+// 	const notes = Array.from(document.querySelectorAll('.note'));
+// 	const elDetail = document.querySelector('.detail');
 
-	// INVERT
-	const deltaX = firstRect.left - lastRect.left;
-	const deltaY = firstRect.top - lastRect.top;
-	const deltaW = firstRect.width / lastRect.width;
-	const deltaH = firstRect.height / lastRect.height;
+// 	function flipImages(firstEl, lastEl, change) {
+// 		const firstRect = firstEl.getBoundingClientRect();
+// 		const lastRect = lastEl.getBoundingClientRect();
 
-	change();
+// 		// INVERT
+// 		const deltaX = firstRect.left - lastRect.left;
+// 		const deltaY = firstRect.top - lastRect.top;
+// 		const deltaW = firstRect.width / lastRect.width;
+// 		const deltaH = firstRect.height / lastRect.height;
 
-	// lastEl.parentElement.dataset.flipping = true;
+// 		change();
 
-	const animation = lastEl.animate(
-		[
-			{
-				transform: `translateX(${deltaX}px) translateY(${deltaY}px) scaleX(${deltaW}) scaleY(${deltaH})`,
-			},
-			{
-				transform: 'none',
-			},
-		],
-		{
-			duration: 600,
-			easing: 'cubic-bezier(.2, 0, .3, 1)',
-		}
-	);
+// 		// lastEl.parentElement.dataset.flipping = true;
 
-	animation.onfinish = () => {
-		// delete lastEl.parentElement.dataset.flipping;
-	};
-}
+// 		const animation = lastEl.animate(
+// 			[
+// 				{
+// 					transform: `translateX(${deltaX}px) translateY(${deltaY}px) scaleX(${deltaW}) scaleY(${deltaH})`,
+// 				},
+// 				{
+// 					transform: 'none',
+// 				},
+// 			],
+// 			{
+// 				duration: 600,
+// 				easing: 'cubic-bezier(.2, 0, .3, 1)',
+// 			}
+// 		);
 
-notes.forEach((note) => {
-	note.addEventListener('click', () => {
+// 		animation.onfinish = () => {
+// 			// delete lastEl.parentElement.dataset.flipping;
+// 		};
+// 	}
 
-		elDetail.innerHTML = '';
+// 	notes.forEach((note) => {
+// 		note.addEventListener('click', () => {
+// 			elDetail.innerHTML = '';
 
-		const elClone = note.cloneNode(true);
-		elDetail.appendChild(elClone);
+// 			const elClone = note.cloneNode(true);
+// 			elDetail.appendChild(elClone);
 
-		flipImages(note, elClone, () => {
-			elApp.dataset.state = 'detail';
-		});
+// 			flipImages(note, elClone, () => {
+// 				elApp.dataset.state = 'detail';
+// 				note.style.opacity = 0;
+// 			});
 
-		function revert() {
-			flipImages(elClone, note, () => {
-				elApp.dataset.state = 'gallery';
-				elDetail.removeEventListener('click', revert);
-        elClone.remove()
-			});
-		}
+// 			function revert() {
+// 				flipImages(elClone, note, () => {
+// 					elApp.dataset.state = 'gallery';
+// 					note.style.opacity = '';
+// 					elClone.remove();
+// 					elDetail.removeEventListener('click', revert);
+// 				});
+// 			}
 
-		elDetail.addEventListener('click', revert);
-	});
-});
+// 			elDetail.addEventListener('click', revert);
+// 		});
+// 	});
+// };
 
+// flippingCards();
 
+App.init();

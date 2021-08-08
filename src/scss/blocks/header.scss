@@ -1,15 +1,58 @@
 .header {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 1.2rem;
+	display: flex;
+	justify-content: space-between;
+	padding-top: 1.2rem;
 
-  &__controls {
-    display: flex;
-    align-items: center;
-  }
+	&__controls {
+		display: flex;
+		align-items: center;
+	}
 
-  &__search {
-    margin-right: 1.5rem;
-  }
+	&__search {
+		margin-right: 0.8rem;
+	}
+
+	&__edit {
+		position: relative;
+		margin-right: 1rem;
+	}
+
+	&__edit.active {
+		.edit-btn {
+			color: $activeColor;
+		}
+		.edit-menu {
+			opacity: 1;
+			z-index: 20;
+			transform: translate(-50%, 10%);
+		}
+	}
 }
 
+.edit-menu {
+	position: absolute;
+	border-radius: 8px;
+	padding: 0.5rem;
+	text-align: center;
+	width: 8.2rem;
+	background-image: $activeNoteGradient;
+	left: 50%;
+	opacity: 0;
+	z-index: -1;
+	border: 1px solid $activeColorDark;
+	transform: translate(-50%, -10%);
+	transition: all 0.3s ease-out;
+	&__btn {
+		font-family: 'Monserrat-Regular', sans-serif;
+		color: #c4c4c4;
+		width: 100%;
+		margin-bottom: 0.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid $activeColorDark;
+		transition: all 0.3s ease;
+		&:hover {
+			color: $activeColor;
+			border-bottom: 1px solid $activeColor;
+		}
+	}
+}

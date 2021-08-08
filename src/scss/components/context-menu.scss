@@ -1,0 +1,29 @@
+.context-menu {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+	width: 11rem;
+	z-index: 100;
+	border-radius: 8px;
+	padding: 0 0.8rem;
+	overflow: hidden;
+	border: 1px solid $activeColorDark;
+	background-color: $mainColor;
+	&__btn {
+		background-color: $mainColor;
+		padding: 0.8rem 0;
+		border-bottom: 1px solid $activeColorDark;
+		color: #c4c4c4;
+		font-family: 'Monserrat-Medium';
+    transition: all .3s ease-out;
+		&:hover,
+		&:active {
+			color: $activeColor;
+		}
+		&:last-child {
+			border: none;
+			margin: 0;
+		}
+	}
+}

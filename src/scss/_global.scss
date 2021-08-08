@@ -12,8 +12,9 @@ html {
 
 body {
 	background-color: $mainColor;
-  font-family: 'Monserrat-Regular', sans-serif;
-  color: $textColor;
+	font-family: 'Monserrat-Regular', sans-serif;
+	color: $textColor;
+	height: 100vh;
 }
 
 h1,
@@ -33,5 +34,7 @@ ul {
 .container {
 	max-width: 1200px;
 	padding: 0 1rem;
-  margin: 0 auto;
+	margin: 0 auto;
+	overflow-x: hidden;
+	height: 100%;
 }
