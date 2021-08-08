@@ -24,33 +24,59 @@
         Notes
       </h1>
       <div class="header__controls">
-        <button class="edit-btn btn" id="edit-btn">
-          Edit
-        </button>
+        <div class="header__edit">
+          <button class="edit-btn btn" id="edit-btn">
+            Edit
+          </button>
+          <div class="edit-menu">
+            <button class="btn edit-menu__btn" id="remove-all-btn">
+              Remove all
+            </button>
+            <button class="btn edit-menu__btn" id="remove-completed-btn">
+              Remove all completed
+            </button>
+            <button class="btn edit-menu__btn" id="mark-notes-btn" data-complete="false">
+              Mark all as completed
+            </button>
+          </div>
+        </div>
         <div class="header__search search-control">
           <input type="search" class="search-input input" name="search" id="search">
           <label class="search-icon"></label>
         </div>
         <button class="settings-btn btn" id="settings-btn"></button>
+        <div class="settings">
+
+        </div>
       </div>
     </header>
     <main class="main">
       <ul class="notes-tabs">
-        <li class="notes-tab">
+        <li class="notes-tab active" data-type="all" >
           All
         </li>
-        <li class="notes-tab">
-          Done
+        <li class="notes-tab" data-type="completed">
+          Completed
+        </li>
+        <li class="notes-tab" data-type="todo">
+          ToDo
+        </li>
+        <li class="notes-tab" data-type="targets">
+          Targets
+        </li>
+        <li class="notes-tab" data-type="note">
+          Notes
         </li>
       </ul>
       <ul class="notes" id="notes">
-        <li class="note" id="n1">
+        <li class="note" id="n1" data-type="todo">
           <h2 class="note__title">
             Reminder
           </h2>
           <div class="note__content">
-            lore
-            Lorem ipsum dolor sit amet. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est, libero.
+            <p class="note__description">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            </p>
           </div>
           <div class="note__info">
             <div class="note__date">
@@ -61,50 +87,19 @@
             </div>
           </div>
         </li>
-        <li class="note" id="n1">
+        <li class="note" id="n2" data-type="todo">
           <h2 class="note__title">
             Reminder
           </h2>
           <div class="note__content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores veritatis sapiente qui tempore! Quod labore
-            expedita quae recusandae nostrum amet quibusdam et, similique saepe provident ea minima accusantium, dolorem
-            necessitatibus! Lorem ipsum dolor sit amet. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est,
-            libero.
-          </div>
-          <div class="note__info">
-            <div class="note__date">
-              Jun 17
-            </div>
-            <div class="note__type">
-              ToDo
-            </div>
-          </div>
-        </li>
-        <li class="note" id="n1">
-          <h2 class="note__title">
-            Reminder
-          </h2>
-          <div class="note__content">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facilis, molestiae accusantium suscipit quae
-            saepe, laborum ex eaque obcaecati inventore a ducimus at alias delectus ullam explicabo placeat tenetur ut
-            aperiam!
-            Lorem ipsum dolor sit amet. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est, libero.
-          </div>
-          <div class="note__info">
-            <div class="note__date">
-              Jun 17
-            </div>
-            <div class="note__type">
-              ToDo
-            </div>
-          </div>
-        </li>
-        <li class="note" id="n1">
-          <h2 class="note__title">
-            Reminder
-          </h2>
-          <div class="note__content">
-            Lorem ipsum dolor sit amet. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est, libero.
+            <p class="note__description">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores veritatis sapiente qui tempore! Quod
+              labore
+              expedita quae recusandae nostrum amet quibusdam et, similique saepe provident ea minima accusantium,
+              dolorem
+              necessitatibus! Lorem ipsum dolor sit amet. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est,
+              libero.
+            </p>
           </div>
           <div class="note__info">
             <div class="note__date">
@@ -120,10 +115,42 @@
         <!--   cloned note   -->
       </ul>
     </main>
+
+    <form class="form" id="form">
+      <button type="button" class="btn close-btn">X</button>
+      <div class="form-choice">
+        <h3 class="form-choice__title">Choose Note Type</h3>
+        <div class="form-selectors">
+          <input type="radio" name="note-type" id="toDo-picker" data-type="todo">
+          <label for="toDo-picker">To Do</label>
+          <input type="radio" name="note-type" id="targets-picker" data-type="targets">
+          <label for="targets-picker">Targets</label>
+          <input type="radio" name="note-type" id="note-picker" data-type="note" checked>
+          <label for="note-picker">Note</label>
+        </div>
+      </div>
+      <div class="form-control">
+        <label for="note-title">Note Title</label>
+        <input class="input form-input" type="text" placeholder=" Enter note title" name="note-title">
+      </div>
+      <div class="form__body">
+        <div class="form-control">
+          <label for="note-text">Note Description</label>
+          <textarea class="input form-input" type="text" placeholder="Enter note description"
+            name="note-text"></textarea>
+        </div>
+      </div>
+      <button id="create-btn" type="submit" class="btn form-btn">Create Note</button>
+    </form>
   </div>
 
-
-
+  <button type="button" class="btn create-note" id="create-note">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+      <path
+        d="M369.9,97.9,286,14A48,48,0,0,0,252.1-.1H48A48.16,48.16,0,0,0,0,48V464a48,48,0,0,0,48,48H336a48,48,0,0,0,48-48V131.9A48.23,48.23,0,0,0,369.9,97.9Zm-22.6,22.7a15.73,15.73,0,0,1,4.2,7.4H256V32.5a15.73,15.73,0,0,1,7.4,4.2ZM336,480H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32H224V136a23.94,23.94,0,0,0,24,24H352V464A16,16,0,0,1,336,480ZM288,300v8a12,12,0,0,1-12,12H208v68a12,12,0,0,1-12,12h-8a12,12,0,0,1-12-12V320H108a12,12,0,0,1-12-12v-8a12,12,0,0,1,12-12h68V220a12,12,0,0,1,12-12h8a12,12,0,0,1,12,12v68h68A12,12,0,0,1,288,300Z">
+      </path>
+    </svg>
+  </button>
   <script src="js/script.js"></script>
 </body>
 
