@@ -1,8 +1,6 @@
-import { getEl, getElements, connectEvent } from '../utils/DOMHelper';
+import { getEl, getElements } from '../utils/DOMHelper';
 
 export default class Form {
-	store = [];
-
 	constructor(formSelector) {
 		this.form = getEl(formSelector);
 		this.titleInput = getEl('input[name="note-title"]', this.form);
@@ -33,7 +31,6 @@ export default class Form {
 			if (this.isValid(this.titleInput)) {
 				formData.title = this.titleInput.value;
 				this.titleInput.parentNode.classList.remove('invalid');
-				this.titleInput.value = '';
 			} else {
 				this.titleInput.parentNode.classList.add('invalid');
 				return;
@@ -42,11 +39,10 @@ export default class Form {
 
 		if (description) {
 			if (this.isValid(description)) {
-				description.parentNode.classList.add('invalid');
-				formData.description = description.value;
-				description.value = '';
-			} else {
 				description.parentNode.classList.remove('invalid');
+				formData.description = description.value;
+			} else {
+				description.parentNode.classList.add('invalid');
 				return;
 			}
 		}
@@ -88,8 +84,8 @@ export default class Form {
 	}
 
 	createFormBody(type) {
-		const picker = document.createElement('div');
-		picker.classList.add('options-controls');
+		const optionPicker = document.createElement('div');
+		optionPicker.classList.add('options-controls');
 
 		const optionsList = document.createElement('ul');
 		optionsList.classList.add('options-list');
@@ -114,15 +110,15 @@ export default class Form {
 			}
 		}
 
-		picker.innerHTML = `
+		optionPicker.innerHTML = `
 			<input class="input form-input" placeholder="Enter Your task" type="text">
 			<button type="button" class="btn form-btn">Add Option</button>
     `;
 
-		const pickerBtn = picker.querySelector('button');
-		pickerBtn.addEventListener('click', this.createOption.bind(this));
+		const optionPickerBtn = optionPicker.querySelector('button');
+		optionPickerBtn.addEventListener('click', this.createOption.bind(this));
 
-		this.formBody.append(optionsList, picker);
+		this.formBody.append(optionsList, optionPicker);
 	}
 
 	createOption(e) {
@@ -157,13 +153,13 @@ export default class Form {
 	}
 
 	connectChangeBodyHandler() {
-		this.formSelectors.forEach((sel) =>
-			sel.addEventListener('change', this.changeFormBody.bind(this))
+		this.formSelectors.forEach((selector) =>
+			selector.addEventListener('change', this.changeFormBody.bind(this))
 		);
 	}
 
 	connectInputHandler(input) {
-		input.addEventListener('blur', (e) => {
+		input.addEventListener('blur', () => {
 			if (this.isValid(input)) {
 				input.parentNode.classList.remove('invalid');
 			} else {

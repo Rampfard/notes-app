@@ -1,3 +1,10 @@
+import {
+	getEl,
+	getElements,
+	createElement,
+	addClass,
+} from '../utils/DOMHelper';
+
 export default class Note {
 	months = [
 		'Jan',
@@ -15,7 +22,7 @@ export default class Note {
 	];
 
 	createNote(formData) {
-		const note = document.createElement('li');
+		const note = createElement('li');
 		note.classList.add('note');
 
 		if (formData.type !== 'note') {
@@ -27,8 +34,8 @@ export default class Note {
 		}
 
 		const { title, type, id } = formData;
-		note.dataset.type = type;
 
+		note.dataset.type = type;
 		note.id = id;
 
 		const date = new Date();
@@ -44,10 +51,10 @@ export default class Note {
 			</div>
 		`;
 
-		const noteContentEl = note.querySelector('.note__content');
+		const noteContentEl = getEl('.note__content', note);
 
 		if (type !== 'todo') {
-			const description = document.createElement('p');
+			const description = createElement('p');
 			description.innerText = formData.description;
 			description.classList.add('note__description');
 			noteContentEl.insertAdjacentElement('afterbegin', description);
@@ -61,11 +68,11 @@ export default class Note {
 	}
 
 	createOptions(options, parentEl) {
-		const optionsList = document.createElement('ul');
+		const optionsList = createElement('ul');
 		optionsList.classList.add('note-options');
 
 		options.forEach((option) => {
-			const newOption = document.createElement('li');
+			const newOption = createElement('li');
 			newOption.classList.add('note-option');
 
 			newOption.innerHTML = `
@@ -82,6 +89,6 @@ export default class Note {
 			optionsList.append(newOption);
 		});
 
-		parentEl.appendChild(optionsList);
+		parentEl.append(optionsList);
 	}
 }

@@ -1,24 +1,24 @@
-import { getEl, getElements, delegate } from '../utils/DOMHelper';
+import { getEl, getElements, createElement } from '../utils/DOMHelper';
 
 export default class UI {
-	constructor(noteTemplate, formInstance) {
+	constructor(noteTemplate, formInstance, actions) {
+		this.actions = actions;
 		this.noteTemplate = noteTemplate;
 		this.formInstance = formInstance;
 		this.noteList = getEl('.notes');
 		this.tabs = getEl('.notes-tabs');
 		this.createBtn = getEl('#create-note');
 		this.settingsBtn = getEl('#settings-btn');
-		this.searchInput = getEl('#search');
+		this.searchInput = getEl('#search-input');
 		this.form = getEl('#form');
 		this.editMenu = getEl('.header__edit');
 		this.tabs = getEl('.notes-tabs');
 		this.isContextMenuActive = false;
-		this.isEditMenuActive = false;
 
 		this.connectSearchHandler();
 		this.connectCreateBtn();
 		this.connectTabsHandler();
-		this.connectNoteEditHandler();
+		this.connectDoubleClickToNotesList();
 		this.connectBodyClickHandler();
 	}
 
@@ -34,7 +34,7 @@ export default class UI {
 	editNote(target) {
 		target.classList.add('editing');
 
-		const textarea = document.createElement('textarea');
+		const textarea = createElement('textarea');
 		textarea.classList.add('input', 'form-input', 'edit');
 
 		textarea.value = target.innerText;
@@ -50,6 +50,18 @@ export default class UI {
 
 		contentEl.classList.remove('editing');
 		textarea.remove();
+	}
+
+	editNoteHandler(e) {
+		const target = e.target;
+
+		if (
+			target.closest('.note') &&
+			(target.classList.contains('note__description') ||
+				target.classList.contains('note__title'))
+		) {
+			this.editNote(e.target);
+		}
 	}
 
 	setNotesActiveStatus(id) {
@@ -103,7 +115,7 @@ export default class UI {
 	}
 
 	createContextMenu(e) {
-		const menu = document.createElement('div');
+		const menu = createElement('div');
 		menu.classList.add('context-menu');
 
 		menu.innerHTML = `
@@ -146,15 +158,8 @@ export default class UI {
 	}
 
 	connectCreateBtn() {
-		this.createBtn.addEventListener('click', (e) => {
+		this.createBtn.addEventListener('click', () => {
 			this.form.classList.toggle('shown');
-		});
-	}
-
-	connectEditBtn() {
-		this.editBtn.addEventListener('click', (e) => {
-			this.editBtn.classList.toggle('active');
-			this.editBtn.nextElementSibling.classList.toggle('active');
 		});
 	}
 
@@ -175,20 +180,13 @@ export default class UI {
 		});
 	}
 
-	connectNoteEditHandler() {
+	connectDoubleClickToNotesList() {
 		this.noteList.addEventListener('dblclick', (e) => {
-			const target = e.target;
-
-			if (target.closest('.note')) {
-				if (
-					target.classList.contains('note__description') ||
-					target.classList.contains('note__title')
-				) {
-					this.editNote(e.target);
-				}
-			}
+			this.editNoteHandler(e);
 		});
 	}
+
+	connectClickToNoteList() {}
 
 	connectBodyClickHandler() {
 		document.body.addEventListener('click', (e) => {
@@ -295,8 +293,8 @@ export default class UI {
 						target.dataset.complete = false;
 
 						target.innerText = 'Mark all as completed';
+						break;
 					}
-					break;
 				}
 			}
 		});

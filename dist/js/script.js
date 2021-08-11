@@ -2402,7 +2402,7 @@ var store = __webpack_require__(/*! ../internals/shared-store */ "./node_modules
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.16.0',
+  version: '3.16.1',
   mode: IS_PURE ? 'pure' : 'global',
   copyright: '© 2021 Denis Pushkarev (zloirock.ru)'
 });
@@ -4383,15 +4383,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 
 var Form = /*#__PURE__*/function () {
   function Form(formSelector) {
     _classCallCheck(this, Form);
-
-    _defineProperty(this, "store", []);
 
     this.form = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_22__["getEl"])(formSelector);
     this.titleInput = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_22__["getEl"])('input[name="note-title"]', this.form);
@@ -4425,7 +4421,6 @@ var Form = /*#__PURE__*/function () {
         if (this.isValid(this.titleInput)) {
           formData.title = this.titleInput.value;
           this.titleInput.parentNode.classList.remove('invalid');
-          this.titleInput.value = '';
         } else {
           this.titleInput.parentNode.classList.add('invalid');
           return;
@@ -4434,11 +4429,10 @@ var Form = /*#__PURE__*/function () {
 
       if (description) {
         if (this.isValid(description)) {
-          description.parentNode.classList.add('invalid');
-          formData.description = description.value;
-          description.value = '';
-        } else {
           description.parentNode.classList.remove('invalid');
+          formData.description = description.value;
+        } else {
+          description.parentNode.classList.add('invalid');
           return;
         }
       }
@@ -4481,8 +4475,8 @@ var Form = /*#__PURE__*/function () {
   }, {
     key: "createFormBody",
     value: function createFormBody(type) {
-      var picker = document.createElement('div');
-      picker.classList.add('options-controls');
+      var optionPicker = document.createElement('div');
+      optionPicker.classList.add('options-controls');
       var optionsList = document.createElement('ul');
       optionsList.classList.add('options-list');
 
@@ -4502,10 +4496,10 @@ var Form = /*#__PURE__*/function () {
         }
       }
 
-      picker.innerHTML = "\n\t\t\t<input class=\"input form-input\" placeholder=\"Enter Your task\" type=\"text\">\n\t\t\t<button type=\"button\" class=\"btn form-btn\">Add Option</button>\n    ";
-      var pickerBtn = picker.querySelector('button');
-      pickerBtn.addEventListener('click', this.createOption.bind(this));
-      this.formBody.append(optionsList, picker);
+      optionPicker.innerHTML = "\n\t\t\t<input class=\"input form-input\" placeholder=\"Enter Your task\" type=\"text\">\n\t\t\t<button type=\"button\" class=\"btn form-btn\">Add Option</button>\n    ";
+      var optionPickerBtn = optionPicker.querySelector('button');
+      optionPickerBtn.addEventListener('click', this.createOption.bind(this));
+      this.formBody.append(optionsList, optionPicker);
     }
   }, {
     key: "createOption",
@@ -4537,8 +4531,8 @@ var Form = /*#__PURE__*/function () {
     value: function connectChangeBodyHandler() {
       var _this = this;
 
-      this.formSelectors.forEach(function (sel) {
-        return sel.addEventListener('change', _this.changeFormBody.bind(_this));
+      this.formSelectors.forEach(function (selector) {
+        return selector.addEventListener('change', _this.changeFormBody.bind(_this));
       });
     }
   }, {
@@ -4546,7 +4540,7 @@ var Form = /*#__PURE__*/function () {
     value: function connectInputHandler(input) {
       var _this2 = this;
 
-      input.addEventListener('blur', function (e) {
+      input.addEventListener('blur', function () {
         if (_this2.isValid(input)) {
           input.parentNode.classList.remove('invalid');
         } else {
@@ -4596,6 +4590,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es.object.define-property.js */ "./node_modules/core-js/modules/es.object.define-property.js");
 /* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _utils_DOMHelper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/DOMHelper */ "./src/js/utils/DOMHelper.js");
 
 
 
@@ -4612,6 +4607,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+
+
 var Note = /*#__PURE__*/function () {
   function Note() {
     _classCallCheck(this, Note);
@@ -4622,7 +4619,7 @@ var Note = /*#__PURE__*/function () {
   _createClass(Note, [{
     key: "createNote",
     value: function createNote(formData) {
-      var note = document.createElement('li');
+      var note = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_7__["createElement"])('li');
       note.classList.add('note');
 
       if (formData.type !== 'note') {
@@ -4640,10 +4637,10 @@ var Note = /*#__PURE__*/function () {
       note.id = id;
       var date = new Date();
       note.innerHTML = "\n\t\t\t<h2 class=\"note__title\">\n\t\t\t\t".concat(title, "\n\t\t\t</h2>\n\t\t\t<div class=\"note__content\"></div>\n\t\t\t<div class=\"note__info\">\n\t\t\t\t<div class=\"note__date\">").concat(this.months[date.getMonth()], " ").concat(date.getDate(), "</div>\n\t\t\t\t<div class=\"note__type\">").concat(type, "</div>\n\t\t\t</div>\n\t\t");
-      var noteContentEl = note.querySelector('.note__content');
+      var noteContentEl = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_7__["getEl"])('.note__content', note);
 
       if (type !== 'todo') {
-        var description = document.createElement('p');
+        var description = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_7__["createElement"])('p');
         description.innerText = formData.description;
         description.classList.add('note__description');
         noteContentEl.insertAdjacentElement('afterbegin', description);
@@ -4658,10 +4655,10 @@ var Note = /*#__PURE__*/function () {
   }, {
     key: "createOptions",
     value: function createOptions(options, parentEl) {
-      var optionsList = document.createElement('ul');
+      var optionsList = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_7__["createElement"])('ul');
       optionsList.classList.add('note-options');
       options.forEach(function (option) {
-        var newOption = document.createElement('li');
+        var newOption = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_7__["createElement"])('li');
         newOption.classList.add('note-option');
         newOption.innerHTML = "\n\t\t\t\t<span></span>\n\t\t\t\t<p>".concat(option.text, "</p>\n\t\t\t");
 
@@ -4672,7 +4669,7 @@ var Note = /*#__PURE__*/function () {
         newOption.id = option.id;
         optionsList.append(newOption);
       });
-      parentEl.appendChild(optionsList);
+      parentEl.append(optionsList);
     }
   }]);
 
@@ -4937,25 +4934,25 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 var UI = /*#__PURE__*/function () {
-  function UI(noteTemplate, formInstance) {
+  function UI(noteTemplate, formInstance, actions) {
     _classCallCheck(this, UI);
 
+    this.actions = actions;
     this.noteTemplate = noteTemplate;
     this.formInstance = formInstance;
     this.noteList = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('.notes');
     this.tabs = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('.notes-tabs');
     this.createBtn = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('#create-note');
     this.settingsBtn = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('#settings-btn');
-    this.searchInput = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('#search');
+    this.searchInput = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('#search-input');
     this.form = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('#form');
     this.editMenu = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('.header__edit');
     this.tabs = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('.notes-tabs');
     this.isContextMenuActive = false;
-    this.isEditMenuActive = false;
     this.connectSearchHandler();
     this.connectCreateBtn();
     this.connectTabsHandler();
-    this.connectNoteEditHandler();
+    this.connectDoubleClickToNotesList();
     this.connectBodyClickHandler();
   }
 
@@ -4973,7 +4970,7 @@ var UI = /*#__PURE__*/function () {
     key: "editNote",
     value: function editNote(target) {
       target.classList.add('editing');
-      var textarea = document.createElement('textarea');
+      var textarea = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["createElement"])('textarea');
       textarea.classList.add('input', 'form-input', 'edit');
       textarea.value = target.innerText;
       target.appendChild(textarea);
@@ -4987,6 +4984,15 @@ var UI = /*#__PURE__*/function () {
       contentEl.innerText = textarea.value;
       contentEl.classList.remove('editing');
       textarea.remove();
+    }
+  }, {
+    key: "editNoteHandler",
+    value: function editNoteHandler(e) {
+      var target = e.target;
+
+      if (target.closest('.note') && (target.classList.contains('note__description') || target.classList.contains('note__title'))) {
+        this.editNote(e.target);
+      }
     }
   }, {
     key: "setNotesActiveStatus",
@@ -5043,7 +5049,7 @@ var UI = /*#__PURE__*/function () {
   }, {
     key: "createContextMenu",
     value: function createContextMenu(e) {
-      var menu = document.createElement('div');
+      var menu = Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["createElement"])('div');
       menu.classList.add('context-menu');
       menu.innerHTML = "\n\t\t\t<button class=\"btn context-menu__btn\" id=\"delete-note-btn\" type=\"button\">Remove Note</button>\n\t\t\t<button class=\"btn context-menu__btn\" id=\"expand-note-btn\" type=\"button\">Expand Note</button>\n\t\t\t<button class=\"btn context-menu__btn\" id=\"complete-note-btn\" type=\"button\">Mark as Complete</button>\n\t\t\t<button class=\"btn context-menu__btn\" id=\"copy-description-btn\" type=\"button\">Copy Description</button>\n\t\t";
       var y = e.clientY;
@@ -5080,25 +5086,14 @@ var UI = /*#__PURE__*/function () {
     value: function connectCreateBtn() {
       var _this2 = this;
 
-      this.createBtn.addEventListener('click', function (e) {
+      this.createBtn.addEventListener('click', function () {
         _this2.form.classList.toggle('shown');
-      });
-    }
-  }, {
-    key: "connectEditBtn",
-    value: function connectEditBtn() {
-      var _this3 = this;
-
-      this.editBtn.addEventListener('click', function (e) {
-        _this3.editBtn.classList.toggle('active');
-
-        _this3.editBtn.nextElementSibling.classList.toggle('active');
       });
     }
   }, {
     key: "connectTabsHandler",
     value: function connectTabsHandler() {
-      var _this4 = this;
+      var _this3 = this;
 
       this.tabs.addEventListener('click', function (e) {
         var target = e.target;
@@ -5110,34 +5105,31 @@ var UI = /*#__PURE__*/function () {
           target.classList.add('active');
           var type = target.dataset.type;
 
-          _this4.filterNotesByType(type);
+          _this3.filterNotesByType(type);
         }
       });
     }
   }, {
-    key: "connectNoteEditHandler",
-    value: function connectNoteEditHandler() {
-      var _this5 = this;
+    key: "connectDoubleClickToNotesList",
+    value: function connectDoubleClickToNotesList() {
+      var _this4 = this;
 
       this.noteList.addEventListener('dblclick', function (e) {
-        var target = e.target;
-
-        if (target.closest('.note')) {
-          if (target.classList.contains('note__description') || target.classList.contains('note__title')) {
-            _this5.editNote(e.target);
-          }
-        }
+        _this4.editNoteHandler(e);
       });
     }
+  }, {
+    key: "connectClickToNoteList",
+    value: function connectClickToNoteList() {}
   }, {
     key: "connectBodyClickHandler",
     value: function connectBodyClickHandler() {
-      var _this6 = this;
+      var _this5 = this;
 
       document.body.addEventListener('click', function (e) {
-        if (_this6.isContextMenuActive && !e.target.closest('.context-menu')) {
+        if (_this5.isContextMenuActive && !e.target.closest('.context-menu')) {
           Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('.context-menu').remove();
-          _this6.isContextMenuActive = false;
+          _this5.isContextMenuActive = false;
         }
 
         if (!e.target.closest('.header__edit')) {
@@ -5149,7 +5141,7 @@ var UI = /*#__PURE__*/function () {
   }, {
     key: "contextMenuHandler",
     value: function contextMenuHandler(handlers) {
-      var _this7 = this;
+      var _this6 = this;
 
       this.noteList.addEventListener('contextmenu', function (e) {
         e.preventDefault();
@@ -5163,24 +5155,24 @@ var UI = /*#__PURE__*/function () {
           note = target.closest('.note');
           noteId = note.id;
 
-          if (_this7.isContextMenuActive) {
+          if (_this6.isContextMenuActive) {
             Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getEl"])('.context-menu').remove();
-            _this7.contextMenu = _this7.createContextMenu(e);
-            target.closest('.note').append(_this7.contextMenu);
+            _this6.contextMenu = _this6.createContextMenu(e);
+            target.closest('.note').append(_this6.contextMenu);
           } else {
-            _this7.contextMenu = _this7.createContextMenu(e);
-            target.closest('.note').append(_this7.contextMenu);
-            _this7.isContextMenuActive = true;
+            _this6.contextMenu = _this6.createContextMenu(e);
+            target.closest('.note').append(_this6.contextMenu);
+            _this6.isContextMenuActive = true;
           }
         }
 
-        if (_this7.contextMenu) {
-          _this7.contextMenu.addEventListener('click', function (e) {
+        if (_this6.contextMenu) {
+          _this6.contextMenu.addEventListener('click', function (e) {
             switch (e.target.id) {
               case 'delete-note-btn':
                 removeNote(noteId);
                 note.remove();
-                _this7.isContextMenuActive = false;
+                _this6.isContextMenuActive = false;
                 break;
 
               case 'expand-note-btn':
@@ -5193,7 +5185,7 @@ var UI = /*#__PURE__*/function () {
 
                 setNoteComplete(noteId, options);
 
-                _this7.setNotesActiveStatus(noteId);
+                _this6.setNotesActiveStatus(noteId);
 
                 break;
 
@@ -5207,7 +5199,7 @@ var UI = /*#__PURE__*/function () {
   }, {
     key: "editMenuHandler",
     value: function editMenuHandler(handlers) {
-      var _this8 = this;
+      var _this7 = this;
 
       var removeAll = handlers.removeAll,
           removeCompleted = handlers.removeCompleted,
@@ -5220,21 +5212,21 @@ var UI = /*#__PURE__*/function () {
           case 'edit-btn':
             {
               target.parentNode.classList.toggle('active');
-              _this8.isEditMenuActive = true;
+              _this7.isEditMenuActive = true;
               break;
             }
 
           case 'remove-all-btn':
             {
               removeAll();
-              _this8.noteList.innerHTML = '';
+              _this7.noteList.innerHTML = '';
               break;
             }
 
           case 'remove-completed-btn':
             {
               removeCompleted();
-              Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getElements"])('.note', _this8.noteList).forEach(function (note) {
+              Object(_utils_DOMHelper__WEBPACK_IMPORTED_MODULE_18__["getElements"])('.note', _this7.noteList).forEach(function (note) {
                 if (note.classList.contains('completed')) {
                   note.remove();
                 }
@@ -5247,20 +5239,19 @@ var UI = /*#__PURE__*/function () {
               if (target.dataset.complete === 'false') {
                 setAllCompleted();
 
-                _this8.setNotesActiveStatus();
+                _this7.setNotesActiveStatus();
 
                 target.dataset.complete = true;
                 target.innerText = 'Mark all as incompleted';
               } else {
                 setAllIncompleted();
 
-                _this8.setNotesInactiveStatus();
+                _this7.setNotesInactiveStatus();
 
                 target.dataset.complete = false;
                 target.innerText = 'Mark all as completed';
+                break;
               }
-
-              break;
             }
         }
       });
@@ -5268,22 +5259,22 @@ var UI = /*#__PURE__*/function () {
   }, {
     key: "submitFormHandler",
     value: function submitFormHandler(handler) {
-      var _this9 = this;
+      var _this8 = this;
 
       this.formInstance.form.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        var formData = _this9.formInstance.getFormData();
+        var formData = _this8.formInstance.getFormData();
 
         if (!formData) {
           return;
         }
 
-        _this9.createNote(formData);
+        _this8.createNote(formData);
 
         handler(formData);
 
-        _this9.form.classList.remove('shown');
+        _this8.form.classList.remove('shown');
       });
     }
   }, {
@@ -5319,7 +5310,7 @@ var UI = /*#__PURE__*/function () {
   }, {
     key: "editNoteSave",
     value: function editNoteSave(handler) {
-      var _this10 = this;
+      var _this9 = this;
 
       this.noteList.addEventListener('blur', function (e) {
         var id = e.target.closest('.note').id;
@@ -5332,11 +5323,11 @@ var UI = /*#__PURE__*/function () {
         if (e.target.closest('.note__title')) {
           handler(id, newValue, 'title');
 
-          _this10.editNoteFinished(id, e.target.parentNode);
+          _this9.editNoteFinished(id, e.target.parentNode);
         } else {
           handler(id, newValue, 'description');
 
-          _this10.editNoteFinished(id, e.target.parentNode);
+          _this9.editNoteFinished(id, e.target.parentNode);
         }
       }, true);
       this.noteList.addEventListener('keypress', function (e) {
@@ -5349,12 +5340,12 @@ var UI = /*#__PURE__*/function () {
   }, {
     key: "renderNotes",
     value: function renderNotes(store) {
-      var _this11 = this;
+      var _this10 = this;
 
       if (store.length > 0) {
         this.noteList.innerHTML = '';
         store.forEach(function (itemData) {
-          _this11.createNote(itemData);
+          _this10.createNote(itemData);
         });
       }
     }
@@ -5440,67 +5431,31 @@ _App__WEBPACK_IMPORTED_MODULE_0__["default"].init();
 /*!***********************************!*\
   !*** ./src/js/utils/DOMHelper.js ***!
   \***********************************/
-/*! exports provided: default, getEl, getElements, connectEvent, delegate */
+/*! exports provided: getEl, getElements, createElement, connectEvent, delegate */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return DOMHelper; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEl", function() { return getEl; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getElements", function() { return getElements; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createElement", function() { return createElement; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "connectEvent", function() { return connectEvent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "delegate", function() { return delegate; });
-/* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.object.define-property.js */ "./node_modules/core-js/modules/es.object.define-property.js");
-/* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_0__);
-
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var DOMHelper = /*#__PURE__*/function () {
-  function DOMHelper() {
-    _classCallCheck(this, DOMHelper);
-  }
-
-  _createClass(DOMHelper, null, [{
-    key: "getEl",
-    value: function getEl(selector) {
-      var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
-      return parent.querySelector(selector);
-    }
-  }, {
-    key: "getElements",
-    value: function getElements(selector) {
-      var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
-      return parent.querySelectorAll(selector);
-    }
-  }, {
-    key: "connectEvent",
-    value: function connectEvent(target, type, callback, capture) {
-      target.addEventListener(type, callback, !!capture);
-    } // static delegateEvent(target, type, selector) {}
-
-  }]);
-
-  return DOMHelper;
-}();
-
-
-function getEl(selector) {
+var getEl = function getEl(selector) {
   var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
   return parent.querySelector(selector);
-}
-function getElements(selector) {
+};
+var getElements = function getElements(selector) {
   var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
   return parent.querySelectorAll(selector);
-}
-function connectEvent(target, type, handler, capture) {
+};
+var createElement = function createElement(tag) {
+  return document.createElement(tag);
+};
+var connectEvent = function connectEvent(target, type, handler, capture) {
   target.addEventListener(type, handler, !!capture);
-}
-function delegate(target, selector, type, handler, capture) {
+};
+var delegate = function delegate(target, selector, type, handler, capture) {
   var dispatchEvent = function dispatchEvent(e) {
     if (e.target.closest(selector)) {
       handler.call(e.target, e);
@@ -5508,7 +5463,7 @@ function delegate(target, selector, type, handler, capture) {
   };
 
   connectEvent(target, type, dispatchEvent, !!capture);
-}
+};
 
 /***/ })
 
