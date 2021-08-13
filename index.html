@@ -44,9 +44,11 @@
           <input type="search" class="search-input input" name="search" id="search-input">
           <label class="search-icon"></label>
         </div>
-        <button class="settings-btn btn" id="settings-btn"></button>
-        <div class="settings">
-
+        <div class="header__settings">
+          <button class="settings-btn btn" id="settings-btn"></button>
+          <div class="settings-menu">
+            <button class="btn settings-menu__btn" id="toggle-theme-btn">Toggle Theme</button>
+          </div>
         </div>
       </div>
     </header>
@@ -111,7 +113,7 @@
           </div>
         </li>
       </ul>
-      <ul class="detail">
+      <ul id="note-detail" class="note-detail">
         <!--   cloned note   -->
       </ul>
     </main>
@@ -152,13 +154,39 @@
     </svg>
   </button>
 
-  <!-- <div class="context-menu">
-    <button id="delete-note-btn" class="btn context-menu__btn" type="button">Remove Note</button>
-    <button id="expand-note-btn" class="btn context-menu__btn" type="button">Expand Note</button>
-    <button id="complete-note-btn" class="btn context-menu__btn" type="button">Mark as Complete</button>
-    <button id="copy-description-btn" class="btn context-menu__btn" type="button">Copy Description</button>
-  </div> -->
+  <div class="notifications" id="notifications"></div>
 
+  <div class="backdrop"></div>
+
+  <template id="context-menu-template">
+    <div id="context-menu" class="context-menu">
+      <button id="delete-note-btn" class="btn context-menu__btn" type="button">
+        <span>Remove note</span>
+      </button>
+      <button id="choose-text-btn" class="btn context-menu__btn" type="button">
+        <span>Choose text</span>
+      </button>
+      <button id="complete-note-btn" class="btn context-menu__btn" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <g class="fa-group">
+            <path fill="currentColor"
+              d="M166.57 282.71L44 159.21a17.87 17.87 0 0 1 .18-25.2l42.1-41.77a17.87 17.87 0 0 1 25.2.18l68.23 68.77L336.87 5.11a17.88 17.88 0 0 1 25.21.18L404 47.41a17.88 17.88 0 0 1-.18 25.21L191.78 282.89a17.88 17.88 0 0 1-25.21-.18z"
+              class="svg-secondary"></path>
+            <path fill="currentColor"
+              d="M504.5 172a25.86 25.86 0 0 1 0 36.42L210.1 504.46a25.48 25.48 0 0 1-36.2 0L7.5 337.1a25.84 25.84 0 0 1 0-36.41l36.2-36.41a25.48 25.48 0 0 1 36.2 0L192 377l240.1-241.46a25.5 25.5 0 0 1 36.2 0L504.5 172z"
+              class="svg-primary"></path>
+          </g>
+        </svg>
+        <span>Toggle complete</span>
+      </button>
+      <button id="copy-description-btn" class="btn context-menu__btn" type="button">
+        <span>Copy description</span>
+      </button>
+      <button id="copy-title-btn" class="btn context-menu__btn" type="button">
+        <span>Copy title</span>
+      </button>
+    </div>
+  </template>
   <script src="js/script.js"></script>
 </body>
 
