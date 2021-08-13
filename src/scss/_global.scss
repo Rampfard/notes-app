@@ -11,10 +11,26 @@ html {
 }
 
 body {
-	background-color: $mainColor;
+	background: linear-gradient(to bottom, #000 0%, transparent 60%),
+		url('../img/aurora.jpg') center / cover no-repeat;
 	font-family: 'Monserrat-Regular', sans-serif;
-	color: $textColor;
+	color: var(--text-color);
 	height: 100vh;
+}
+
+body.gray-theme {
+	--main-gradient: linear-gradient(25deg, #272433 1%, #353545 90%);
+	--form-gradient: linear-gradient(25deg, #272433 1%, #353545 90%);
+	--main-color: #1f1d2c;
+	--text-color: #d0d0d3;
+	--btn-color: #767183;
+	--active-color-light: #5fd5eb;
+	--active-color: #edb853;
+	--active-color-dark: #706fc8;
+	--active-note-color: #353545;
+	--border-color: #a4a4ce;
+
+	background: var(--main-color);
 }
 
 h1,
@@ -37,4 +53,21 @@ ul {
 	margin: 0 auto;
 	overflow-x: hidden;
 	height: 100%;
+}
+
+.backdrop {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	opacity: 0;
+	transition: all 0.3s ease-out;
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.backdrop.shown {
+	opacity: 1;
+	z-index: 10;
 }

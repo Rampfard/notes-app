@@ -1,14 +1,26 @@
 // Variables
 
-$mainColor: #1f1d2c;
-$textColor: #d0d0d3;
-$btnColor: #767183;
-$activeColorLight: #53e4df;
-$activeColor: #edb853;
-$activeColorDark: #706fc8;
-$activeNoteColor: #353545;
-$borderColor: #a4a4ce;
-$activeNoteGradient: linear-gradient(25deg, #272433 1%, #353545 90%);
+$purple: #311f68;
+$lightPurple: #5b59ad;
+$lightBlue: #708dda;
+$pink: #e57eb3;
+$red: #c754bf;
+$yellow: #e8c49f;
+$darkPink: #ae66c8;
+
+:root {
+	--main-color: #302b63;
+	--text-color: #d0d0d3;
+	--btn-color: #767183;
+	--active-color-light: #32a5e0;
+	--active-color: #edb853;
+	--active-color-dark: #706fc8;
+	--active-note-color: #353545;
+	--error-color: #c75454;
+	--border-color: #a4a4ce;
+	--main-gradient: linear-gradient(25deg, #0f0c29, #302b63);
+	--form-gradient: linear-gradient(25deg, #4527a0, #000070);
+}
 
 // Fonts
 

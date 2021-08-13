@@ -2,7 +2,7 @@
 	outline: none;
 	background-color: transparent;
 	border: none;
-	color: $btnColor;
+	color: var(--btn-color);
 	font-family: 'Monserrat-SemiBold';
 	cursor: pointer;
 }
@@ -11,14 +11,14 @@
 	font-size: 1.3rem;
 	transition: all 0.3s ease-out;
 	&:hover {
-		color: #fff;
+		color: var(--text-color);
 	}
 }
 
 .settings-btn {
 	position: relative;
 	margin-left: 5px;
-	border: 2px solid $btnColor;
+	border: 2px solid var(--btn-color);
 	width: 25px;
 	height: 25px;
 	border-radius: 50%;
@@ -35,22 +35,22 @@
 	}
 
 	&:hover {
-		border-color: #fff;
-		color: #fff;
+		border-color: var(--text-color);
+		color: var(--text-color);
 	}
 }
 
 .form-btn {
 	padding: 8px 10px;
 	border-radius: 8px;
-	background-color: $mainColor;
-	border: 1px solid $activeColorDark;
-	color: #fff;
+	background-color: var(--main-color);
+	border: 1px solid var(--active-color-dark);
+	color: var(--text-color);
 	transition: all 0.3s ease-out;
 	&:hover,
 	&:active {
-		border-color: $activeColor;
-		color: $activeColor;
+		border-color: var(--active-color);
+		color: var(--active-color);
 	}
 }
 
@@ -59,13 +59,13 @@
 	bottom: 1rem;
 	right: 1rem;
 	border-radius: 50%;
-	background-color: $activeColorDark;
+	background-color: var(--active-color-dark);
 	padding: 0.8rem;
 	height: 60px;
 	width: 60px;
-	box-shadow: 0px 0px 10px 1px $activeColorDark;
+	box-shadow: 0px 0px 10px 1px var(--active-color-dark);
 	svg {
-		fill: #fff;
+		fill: var(--text-color);
 		width: 100%;
 		height: 100%;
 		transition: fill 0.3s ease;
@@ -73,7 +73,7 @@
 
 	&:hover {
 		svg {
-			fill: $activeColor;
+			fill: var(--active-color);
 		}
 	}
 }

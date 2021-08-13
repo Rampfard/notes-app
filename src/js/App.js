@@ -11,7 +11,9 @@ export default class App {
 		const noteTemplate = new NoteTemplate();
 		const mainForm = new Form('.form');
 		const store = new Store('notes');
-		const ui = new UI(noteTemplate, mainForm);
 		const actionsHandler = new Actions(store, ui);
+		const ui = new UI(noteTemplate, mainForm, actionsHandler);
+
+		ui.renderNotes(store.getLocalStorage());
 	}
 }

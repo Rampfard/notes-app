@@ -3,27 +3,50 @@
 	display: flex;
 	flex-direction: column;
 	text-align: left;
-	width: 11rem;
+	width: 12rem;
 	z-index: 100;
 	border-radius: 8px;
 	padding: 0 0.8rem;
 	overflow: hidden;
-	border: 1px solid $activeColorDark;
-	background-color: $mainColor;
+	border: 1px solid var(--active-color-dark);
+	background-color: var(--main-color);
+	z-index: 10;
+
 	&__btn {
-		background-color: $mainColor;
+		display: flex;
+		align-items: center;
 		padding: 0.8rem 0;
-		border-bottom: 1px solid $activeColorDark;
-		color: #c4c4c4;
+		border-bottom: 1px solid var(--active-color-dark);
+		color: var(--text-color);
 		font-family: 'Monserrat-Medium';
-    transition: all .3s ease-out;
+		transition: all 0.3s ease-out;
 		&:hover,
 		&:active {
-			color: $activeColor;
+			color: var(--active-color);
 		}
 		&:last-child {
 			border: none;
 			margin: 0;
 		}
+	}
+
+	svg {
+		width: 15px;
+		height: 15px;
+		margin-right: 0.4rem;
+	}
+
+	.svg-primary,
+	.svg-secondary {
+		stroke: var(--text-color);
+	}
+	.svg-secondary {
+		opacity: 0.4;
+	}
+}
+
+.context-menu.todo {
+	#copy-description-btn {
+		display: none;
 	}
 }

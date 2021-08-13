@@ -1,22 +1,6 @@
 export default class Actions {
-	constructor(store, UI) {
+	constructor(store) {
 		this.store = store;
-		this.ui = UI;
-
-		this.ui.submitFormHandler(this.addItem.bind(this));
-		this.ui.editNoteSave(this.saveNoteChanges.bind(this));
-		this.ui.toggleCompleteStatusHandler(this.toggleCompleteStatus.bind(this));
-		this.ui.renderNotes(this.store.getLocalStorage());
-		this.ui.editMenuHandler({
-			removeAll: this.removeAll.bind(this),
-			removeCompleted: this.removeCompleted.bind(this),
-			setAllIncompleted: this.setAllIncompleted.bind(this),
-			setAllCompleted: this.setAllCompleted.bind(this),
-		});
-		this.ui.contextMenuHandler({
-			removeNote: this.removeNote.bind(this),
-			setNoteComplete: this.toggleCompleteStatus.bind(this),
-		});
 	}
 
 	addItem(noteData) {
@@ -60,14 +44,12 @@ export default class Actions {
 		this.store.updateItem(existingItem);
 	}
 
-	toggleCompleteStatus(id, completedOptions) {
-		const existingItem = this.store.findItem(id);
+	getItemsCount() {
+		return this.store.getItemsCount();
+	}
 
-		if (completedOptions.length < 1) {
-			existingItem.isCompleted = !existingItem.isCompleted;
-			this.store.updateItem(existingItem);
-			return;
-		}
+	toggleCompleteStatus(id, completedOptions = []) {
+		const existingItem = this.store.findItem(id);
 
 		existingItem.options = existingItem.options.map((op) => {
 			const shouldUpdate = completedOptions.includes(op.id);

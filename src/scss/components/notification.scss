@@ -1,0 +1,39 @@
+.notifications {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	bottom: 2rem;
+	left: 1rem;
+}
+
+.notification {
+	padding: 0.8rem;
+	margin: 0.5rem 0;
+	background-color: var(--main-color);
+	color: var(--text-color);
+	border: 1px solid var(--active-color-dark);
+	border-radius: 8px;
+	animation: fadeDown 0.4s ease-out;
+}
+
+.notification.success {
+	border-color: var(--active-color);
+	color: var(--active-color);
+}
+
+.notification.error {
+	border-color: var(--error-color);
+	color: var(--error-color);
+}
+
+@keyframes fadeDown {
+	from {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

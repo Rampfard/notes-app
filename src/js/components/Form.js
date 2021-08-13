@@ -1,63 +1,42 @@
-import { getEl, getElements } from '../utils/DOMHelper';
+import { getEl, getElements, createElement } from '../utils/DOMHelper';
 
 export default class Form {
 	constructor(formSelector) {
 		this.form = getEl(formSelector);
 		this.titleInput = getEl('input[name="note-title"]', this.form);
+		this.descriptionInput = getEl('textarea', this.form);
 		this.formBody = getEl('.form__body', this.form);
 		this.formSelectors = getElements('input[type="radio"]', this.form);
 		this.submitButton = getEl('#create-btn', this.form);
+		this.formType = 'note';
 		this.connectInputHandler(this.titleInput);
+		this.connectInputHandler(this.descriptionInput);
 		this.connectChangeBodyHandler();
 		this.connectCloseBtnHandler();
 	}
 
 	getFormData() {
-		const typeInputs = getElements('input[type="radio"]', this.form);
-		const description = getEl('textarea', this.form);
+		// const typeInputs = getElements('input[type="radio"]', this.form);
 		const options = getElements('.option p', this.form);
 
-		const type = [...typeInputs].filter((input) => input.checked)[0].dataset
-			.type;
+		// const type = [...typeInputs].filter((input) => input.checked)[0].dataset
+		// 	.type;
 
 		const formData = {
 			id: `n${Math.random().toString().slice(4)}`,
-			date: `${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}`,
-			type,
+			date: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
+			type: this.formType,
 			isCompleted: false,
 		};
 
-		if (this.titleInput) {
-			if (this.isValid(this.titleInput)) {
-				formData.title = this.titleInput.value;
-				this.titleInput.parentNode.classList.remove('invalid');
-			} else {
-				this.titleInput.parentNode.classList.add('invalid');
-				return;
-			}
-		}
-
-		if (description) {
-			if (this.isValid(description)) {
-				description.parentNode.classList.remove('invalid');
-				formData.description = description.value;
-			} else {
-				description.parentNode.classList.add('invalid');
-				return;
-			}
-		}
-
-		if (options.length < 1 && type !== 'note') {
-			const message = document.createElement('div');
-			message.classList.add('form__message--invalid');
-
-			message.innerText = 'You need to add at least 1 option';
-
-			this.formBody.append(message);
-			setTimeout(() => {
-				message.remove();
-			}, 3000);
+		if (!this.validateForm(options, this.formType)) {
 			return;
+		}
+
+		formData.title = this.titleInput.value;
+
+		if (this.descriptionInput) {
+			formData.description = this.descriptionInput.value;
 		}
 
 		formData.options = [...options].map((el) => {
@@ -68,26 +47,64 @@ export default class Form {
 			};
 		});
 
-		getElements('.option', this.form).forEach((el) => el.remove());
+		this.clearForm();
 
 		return formData;
+	}
+
+	validateForm(options, noteType) {
+		if (!this.isValid(this.titleInput)) {
+			this.titleInput.parentNode.classList.add('invalid');
+			return false;
+		}
+
+		if (this.descriptionInput) {
+			if (!this.isValid(this.descriptionInput)) {
+				this.descriptionInput.parentNode.classList.add('invalid');
+				return false;
+			}
+		}
+
+		if (options.length < 1 && noteType !== 'note') {
+			const message = createElement('div');
+			message.classList.add('form__message--invalid');
+
+			message.innerText = 'You need to add at least 1 option';
+
+			this.formBody.append(message);
+			setTimeout(() => {
+				message.remove();
+			}, 3000);
+		}
+
+		return true;
 	}
 
 	isValid(input) {
 		return input.value.trim() !== '' ? true : false;
 	}
 
+	clearForm() {
+		this.titleInput.value = '';
+
+		if (this.descriptionInput) {
+			this.descriptionInput.value = '';
+		}
+
+		getElements('.option', this.form).forEach((el) => el.remove());
+	}
+
 	changeFormBody(e) {
-		const type = e.target.dataset.type;
+		this.formType = e.target.dataset.type;
 		this.formBody.innerHTML = '';
-		this.createFormBody(type);
+		this.createFormBody(this.formType);
 	}
 
 	createFormBody(type) {
-		const optionPicker = document.createElement('div');
-		optionPicker.classList.add('options-controls');
+		const optionPicker = createElement('div');
+		optionPicker.classList.add('options-control');
 
-		const optionsList = document.createElement('ul');
+		const optionsList = createElement('ul');
 		optionsList.classList.add('options-list');
 
 		if (type === 'todo') {
@@ -95,19 +112,23 @@ export default class Form {
 		}
 
 		if (type === 'targets' || type === 'note') {
-			const descrInput = document.createElement('div');
+			const descrInput = createElement('div');
 			descrInput.classList.add('form-control');
 			descrInput.innerHTML = `
 				<label>Note Description</label>
 				<textarea class="input form-input" placeholder="Enter description"></textarea>
 			`;
 
-			this.connectInputHandler(getEl('textarea', descrInput));
+			this.descriptionInput = getEl('textarea', descrInput);
+			this.connectInputHandler(this.descriptionInput);
+
 			this.formBody.append(descrInput);
 
 			if (type === 'note') {
 				return;
 			}
+		} else {
+			this.descriptionInput = null;
 		}
 
 		optionPicker.innerHTML = `
@@ -115,7 +136,7 @@ export default class Form {
 			<button type="button" class="btn form-btn">Add Option</button>
     `;
 
-		const optionPickerBtn = optionPicker.querySelector('button');
+		const optionPickerBtn = getEl('button', optionPicker);
 		optionPickerBtn.addEventListener('click', this.createOption.bind(this));
 
 		this.formBody.append(optionsList, optionPicker);
@@ -124,20 +145,20 @@ export default class Form {
 	createOption(e) {
 		e.preventDefault();
 
-		const parentEl = this.formBody.querySelector('.options-list');
-		const input = this.formBody.querySelector('input');
+		const parentEl = getEl('.options-list', this.formBody);
+		const input = getEl('input', this.formBody);
 
 		if (input.value.trim() === '') {
 			return;
 		}
 
-		const option = document.createElement('li');
+		const option = createElement('li');
 		option.classList.add('option');
 
-		const optionText = document.createElement('p');
+		const optionText = createElement('p');
 		optionText.textContent = input.value;
 
-		const deleteBtn = document.createElement('button');
+		const deleteBtn = createElement('button');
 		deleteBtn.classList.add('btn', 'delete-btn');
 		deleteBtn.innerText = 'X';
 

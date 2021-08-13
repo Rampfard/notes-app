@@ -1,25 +1,25 @@
+import Notification from './Notification';
 import { getEl, getElements, createElement } from '../utils/DOMHelper';
-
 export default class UI {
 	constructor(noteTemplate, formInstance, actions) {
 		this.actions = actions;
 		this.noteTemplate = noteTemplate;
 		this.formInstance = formInstance;
+		this.mainSection = getEl('.main');
 		this.noteList = getEl('.notes');
 		this.tabs = getEl('.notes-tabs');
-		this.createBtn = getEl('#create-note');
+		this.createNoteBtn = getEl('#create-note');
 		this.settingsBtn = getEl('#settings-btn');
 		this.searchInput = getEl('#search-input');
 		this.form = getEl('#form');
 		this.editMenu = getEl('.header__edit');
 		this.tabs = getEl('.notes-tabs');
-		this.isContextMenuActive = false;
+		this.notifications = getEl('#notifications');
+		this.backdrop = getEl('.backdrop');
+		this.contextMenuTemplate = getEl('#context-menu-template');
+		this.noteDetail = getEl('#note-detail');
 
-		this.connectSearchHandler();
-		this.connectCreateBtn();
-		this.connectTabsHandler();
-		this.connectDoubleClickToNotesList();
-		this.connectBodyClickHandler();
+		this.bindEventsToElements();
 	}
 
 	createNote(formData) {
@@ -31,15 +31,36 @@ export default class UI {
 		this.noteList.insertAdjacentElement('afterbegin', newNote);
 	}
 
-	editNote(target) {
-		target.classList.add('editing');
+	createNotification(type, description) {
+		const notification = new Notification(
+			type,
+			description
+		).createNotification();
 
-		const textarea = createElement('textarea');
-		textarea.classList.add('input', 'form-input', 'edit');
+		this.notifications.append(notification);
 
-		textarea.value = target.innerText;
-		target.appendChild(textarea);
-		textarea.focus();
+		setTimeout(() => {
+			notification.remove();
+		}, 4000);
+	}
+
+	editNoteHandler(e) {
+		const target = e.target;
+
+		if (
+			target.closest('.note') &&
+			(target.classList.contains('note__description') ||
+				target.classList.contains('note__title'))
+		) {
+			target.classList.add('editing');
+
+			const textarea = createElement('textarea');
+			textarea.classList.add('input', 'form-input', 'edit');
+
+			textarea.value = target.innerText;
+			target.appendChild(textarea);
+			textarea.focus();
+		}
 	}
 
 	editNoteFinished(id, contentEl) {
@@ -52,18 +73,6 @@ export default class UI {
 		textarea.remove();
 	}
 
-	editNoteHandler(e) {
-		const target = e.target;
-
-		if (
-			target.closest('.note') &&
-			(target.classList.contains('note__description') ||
-				target.classList.contains('note__title'))
-		) {
-			this.editNote(e.target);
-		}
-	}
-
 	setNotesActiveStatus(id) {
 		getElements('.note', this.noteList).forEach((note) => {
 			if (id && note.id !== id) {
@@ -71,7 +80,7 @@ export default class UI {
 			}
 			note.classList.add('completed');
 
-			getElements('.note-option').forEach((opt) =>
+			getElements('.note-option', note).forEach((opt) =>
 				opt.classList.add('completed')
 			);
 		});
@@ -84,7 +93,7 @@ export default class UI {
 			}
 			note.classList.remove('completed');
 
-			getElements('.note-option').forEach((opt) =>
+			getElements('.note-option', note).forEach((opt) =>
 				opt.classList.remove('completed')
 			);
 		});
@@ -114,33 +123,217 @@ export default class UI {
 		});
 	}
 
-	createContextMenu(e) {
-		const menu = createElement('div');
-		menu.classList.add('context-menu');
+	createContextMenu(e, note) {
+		const contextMenuTemplate =
+			this.contextMenuTemplate.content.firstElementChild;
+		const contextMenu = contextMenuTemplate.cloneNode(true);
 
-		menu.innerHTML = `
-			<button class="btn context-menu__btn" id="delete-note-btn" type="button">Remove Note</button>
-			<button class="btn context-menu__btn" id="expand-note-btn" type="button">Expand Note</button>
-			<button class="btn context-menu__btn" id="complete-note-btn" type="button">Mark as Complete</button>
-			<button class="btn context-menu__btn" id="copy-description-btn" type="button">Copy Description</button>
-		`;
+		if (note.dataset.type === 'todo') {
+			getEl('#copy-description-btn', contextMenu).remove();
+		}
 
 		const y = e.clientY;
 		const x = e.clientX;
 
-		const menuTop = e.target.closest('.note').getBoundingClientRect().top;
-		const menuLeft = e.target.closest('.note').getBoundingClientRect().left;
+		const noteRect = note.getBoundingClientRect();
 
-		const yInside = y - menuTop;
-		const xInside = x - menuLeft;
+		let yInside = y - noteRect.top;
+		let xInside = x - noteRect.left;
 
-		menu.style.top = `${yInside}px`;
-		menu.style.left = `${xInside}px`;
+		if (x > document.documentElement.getBoundingClientRect().width / 2) {
+			xInside -= note.clientWidth / 2;
+		}
 
-		return menu;
+		contextMenu.style.top = `${yInside}px`;
+		contextMenu.style.left = `${xInside}px`;
+
+		contextMenu.addEventListener(
+			'click',
+			(e) => {
+				this.contextMenuHandler(e, note);
+			},
+			true
+		);
+
+		this.contextMenu = contextMenu;
+		note.append(contextMenu);
+	}
+
+	contextMenuHandler(e, note) {
+		const noteId = note.id;
+
+		switch (e.target.closest('button').id) {
+			case 'delete-note-btn':
+				this.actions.removeNote(noteId);
+				note.remove();
+				this.isContextMenuActive = false;
+				break;
+			case 'choose-text-btn':
+				this.contextMenu.remove();
+				this.chooseNoteText(noteId);
+				break;
+			case 'complete-note-btn':
+				if (note.classList.contains('completed')) {
+					note.classList.remove('completed');
+					this.actions.toggleCompleteStatus(noteId);
+					this.setNotesInactiveStatus(noteId);
+				} else {
+					const options = [...getElements('.note-option', note)].map(
+						(op) => op.id
+					);
+					this.actions.toggleCompleteStatus(noteId, options);
+					this.setNotesActiveStatus(noteId);
+				}
+				break;
+			case 'copy-description-btn':
+				this.contextMenu.remove();
+				navigator.clipboard.writeText(getEl('.note__description').textContent);
+				this.createNotification('Description copied!');
+				break;
+			case 'copy-title-btn':
+				this.contextMenu.remove();
+				navigator.clipboard.writeText(getEl('.note__title').textContent);
+				this.createNotification('Title copied!');
+				break;
+		}
+	}
+
+	editMenuHandler(e) {
+		const target = e.target;
+
+		switch (target.id) {
+			case 'edit-btn': {
+				target.parentNode.classList.toggle('active');
+				break;
+			}
+			case 'remove-all-btn': {
+				this.actions.removeAll();
+				this.noteList.innerHTML = '';
+				this.createNotification('All notes removed', 'succsess');
+				break;
+			}
+			case 'remove-completed-btn': {
+				this.actions.removeCompleted();
+				getElements('.note', this.noteList).forEach((note) => {
+					if (note.classList.contains('completed')) {
+						note.remove();
+					}
+				});
+				this.createNotification('All completed notes removed', 'succsess');
+				break;
+			}
+			case 'mark-notes-btn': {
+				if (target.dataset.complete === 'false') {
+					this.actions.setAllCompleted();
+					this.setNotesActiveStatus();
+					target.dataset.complete = true;
+
+					target.innerText = 'Mark all as incompleted';
+				} else {
+					this.actions.setAllIncompleted();
+					this.setNotesInactiveStatus();
+					target.dataset.complete = false;
+
+					target.innerText = 'Mark all as completed';
+					break;
+				}
+			}
+		}
+	}
+
+	chooseNoteText(id) {
+		const note = getEl(`#${id}`);
+
+		this.noteDetail.innerHTML = '';
+
+		const noteClone = note.cloneNode(true);
+		this.noteDetail.appendChild(noteClone);
+
+		flipNotes(note, noteClone, () => {
+			this.mainSection.dataset.state = 'detail';
+			note.style.opacity = 0;
+		});
+
+		const revert = (e) => {
+			if (!e.target.classList.contains('note-detail')) {
+				return;
+			}
+			flipNotes(noteClone, note, () => {
+				this.mainSection.dataset.state = 'gallery';
+				note.style.opacity = '';
+				noteClone.remove();
+				this.noteDetail.removeEventListener('click', revert);
+			});
+		};
+
+		this.noteDetail.addEventListener('click', revert);
+
+		function flipNotes(firstEl, lastEl, change) {
+			const firstRect = firstEl.getBoundingClientRect();
+			const lastRect = lastEl.getBoundingClientRect();
+
+			const deltaX = firstRect.left - lastRect.left;
+			const deltaY = firstRect.top - lastRect.top;
+			const deltaW = firstRect.width / lastRect.width;
+			const deltaH = firstRect.height / lastRect.height;
+
+			change();
+
+			lastEl.animate(
+				[
+					{
+						transform: `translateX(${deltaX}px) translateY(${deltaY}px) scaleX(${deltaW}) scaleY(${deltaH})`,
+					},
+					{
+						transform: 'none',
+					},
+				],
+				{
+					duration: 600,
+					easing: 'cubic-bezier(0.2, 0, 0.3, 1)',
+				}
+			);
+		}
+	}
+
+	settingsMenuHandler(e) {
+		const target = e.target;
+
+		switch (target.id) {
+			case 'change-theme-btn':
+				document.body.classList.toggle('dray-theme');
+		}
 	}
 
 	// bind events to DOM elements
+
+	connectSettingsBtn() {
+		this.settingsBtn.addEventListener('click', (e) => {
+			this.settingsMenuHandler(e);
+		});
+	}
+
+	connectContextMenu() {
+		this.noteList.addEventListener('contextmenu', (e) => {
+			e.preventDefault();
+
+			const target = e.target;
+
+			if (target.closest('.context-menu')) {
+				return;
+			}
+
+			if (target.closest('.note') && !target.closest('.context-menu')) {
+				const note = target.closest('.note');
+
+				if (this.contextMenu) {
+					this.contextMenu.remove();
+				}
+
+				this.createContextMenu(e, note);
+			}
+		});
+	}
 
 	connectSearchHandler() {
 		this.searchInput.addEventListener('input', (e) => {
@@ -157,9 +350,10 @@ export default class UI {
 		});
 	}
 
-	connectCreateBtn() {
-		this.createBtn.addEventListener('click', () => {
-			this.form.classList.toggle('shown');
+	connectShowFormBtn() {
+		this.createNoteBtn.addEventListener('click', () => {
+			this.form.classList.add('shown');
+			this.backdrop.classList.add('shown');
 		});
 	}
 
@@ -180,127 +374,44 @@ export default class UI {
 		});
 	}
 
-	connectDoubleClickToNotesList() {
+	connectDoubleClickToNoteList() {
 		this.noteList.addEventListener('dblclick', (e) => {
 			this.editNoteHandler(e);
 		});
 	}
 
-	connectClickToNoteList() {}
-
 	connectBodyClickHandler() {
 		document.body.addEventListener('click', (e) => {
-			if (this.isContextMenuActive && !e.target.closest('.context-menu')) {
-				getEl('.context-menu').remove();
-				this.isContextMenuActive = false;
+			if (this.contextMenu && !e.target.closest('.context-menu')) {
+				this.contextMenu.remove();
 			}
 
 			if (!e.target.closest('.header__edit')) {
 				getEl('.header__edit').classList.remove('active');
 			}
-		});
-	}
 
-	// get Handler Function from Actions class and calls bind event to DOM elements from it
-
-	contextMenuHandler(handlers) {
-		this.noteList.addEventListener('contextmenu', (e) => {
-			e.preventDefault();
-
-			const { removeNote, setNoteComplete } = handlers;
-			const target = e.target;
-
-			let note;
-			let noteId;
-
-			if (target.closest('.note') && !target.closest('.context-menu')) {
-				note = target.closest('.note');
-				noteId = note.id;
-
-				if (this.isContextMenuActive) {
-					getEl('.context-menu').remove();
-					this.contextMenu = this.createContextMenu(e);
-					target.closest('.note').append(this.contextMenu);
-				} else {
-					this.contextMenu = this.createContextMenu(e);
-					target.closest('.note').append(this.contextMenu);
-					this.isContextMenuActive = true;
-				}
-			}
-
-			if (this.contextMenu) {
-				this.contextMenu.addEventListener('click', (e) => {
-					switch (e.target.id) {
-						case 'delete-note-btn':
-							removeNote(noteId);
-							note.remove();
-							this.isContextMenuActive = false;
-							break;
-						case 'expand-note-btn':
-							break;
-						case 'complete-note-btn':
-							const options = [...getElements('.option', note)].map(
-								(op) => op.id
-							);
-							setNoteComplete(noteId, options);
-							this.setNotesActiveStatus(noteId);
-							break;
-						case 'copy-description-btn':
-							break;
-					}
-				});
+			if (e.target.classList.contains('backdrop')) {
+				this.backdrop.classList.remove('shown');
+				this.form.classList.remove('shown');
 			}
 		});
 	}
 
-	editMenuHandler(handlers) {
-		const { removeAll, removeCompleted, setAllIncompleted, setAllCompleted } =
-			handlers;
-
+	connectEditMenu() {
 		this.editMenu.addEventListener('click', (e) => {
-			const target = e.target;
+			const { notesQuantity } = this.actions.getItemsCount();
 
-			switch (target.id) {
-				case 'edit-btn': {
-					target.parentNode.classList.toggle('active');
-					this.isEditMenuActive = true;
-					break;
-				}
-				case 'remove-all-btn': {
-					removeAll();
-					this.noteList.innerHTML = '';
-					break;
-				}
-				case 'remove-completed-btn': {
-					removeCompleted();
-					getElements('.note', this.noteList).forEach((note) => {
-						if (note.classList.contains('completed')) {
-							note.remove();
-						}
-					});
-					break;
-				}
-				case 'mark-notes-btn': {
-					if (target.dataset.complete === 'false') {
-						setAllCompleted();
-						this.setNotesActiveStatus();
-						target.dataset.complete = true;
-
-						target.innerText = 'Mark all as incompleted';
-					} else {
-						setAllIncompleted();
-						this.setNotesInactiveStatus();
-						target.dataset.complete = false;
-
-						target.innerText = 'Mark all as completed';
-						break;
-					}
-				}
+			if (notesQuantity < 1) {
+				this.editMenu.classList.add('edit-disabled');
+			} else {
+				this.editMenu.classList.remove('edit-disabled');
 			}
+
+			this.editMenuHandler(e);
 		});
 	}
 
-	submitFormHandler(handler) {
+	connectSubmitFormHandler() {
 		this.formInstance.form.addEventListener('submit', (e) => {
 			e.preventDefault();
 
@@ -311,13 +422,16 @@ export default class UI {
 			}
 
 			this.createNote(formData);
-			handler(formData);
+			this.actions.addItem(formData);
 
 			this.form.classList.remove('shown');
+			this.backdrop.classList.remove('shown');
+
+			this.createNotification(`${formData.type} created!`, 'success');
 		});
 	}
 
-	toggleCompleteStatusHandler(handler) {
+	connectToggleCompleteStatusHandler() {
 		this.noteList.addEventListener('click', (e) => {
 			if (!e.target.closest('.note')) {
 				return;
@@ -343,12 +457,12 @@ export default class UI {
 
 				const completedIds = [...completedOptions].map((op) => op.id);
 
-				handler(id, completedIds);
+				this.actions.toggleCompleteStatus(id, completedIds);
 			}
 		});
 	}
 
-	editNoteSave(handler) {
+	connectEditNoteSaveHandler() {
 		this.noteList.addEventListener(
 			'blur',
 			(e) => {
@@ -360,19 +474,24 @@ export default class UI {
 				}
 
 				if (e.target.closest('.note__title')) {
-					handler(id, newValue, 'title');
+					this.actions.saveNoteChanges(id, newValue, 'title');
 					this.editNoteFinished(id, e.target.parentNode);
 				} else {
-					handler(id, newValue, 'description');
+					this.actions.saveNoteChanges(id, newValue, 'description');
 					this.editNoteFinished(id, e.target.parentNode);
 				}
 			},
 			true
 		);
+	}
 
-		this.noteList.addEventListener('keypress', (e) => {
-			if (e.keyCode === 13) {
-				e.target.blur();
+	connectEditNoteCancel() {
+		this.noteList.addEventListener('keyup', (e) => {
+			const target = e.target;
+
+			if (e.keyCode === 27) {
+				target.value = target.parentNode.textContent.trim();
+				target.blur();
 			}
 		});
 	}
@@ -386,5 +505,20 @@ export default class UI {
 				this.createNote(itemData);
 			});
 		}
+	}
+
+	bindEventsToElements() {
+		this.connectBodyClickHandler();
+		this.connectSearchHandler();
+		this.connectTabsHandler();
+		this.connectDoubleClickToNoteList();
+		this.connectToggleCompleteStatusHandler();
+		this.connectContextMenu();
+		this.connectEditMenu();
+		this.connectEditNoteSaveHandler();
+		this.connectEditNoteCancel();
+		this.connectSubmitFormHandler();
+		this.connectShowFormBtn();
+		this.connectSettingsBtn();
 	}
 }

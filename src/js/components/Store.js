@@ -90,13 +90,11 @@ export default class Store {
 
 	getItemsCount() {
 		const storeItems = this.getLocalStorage();
-		const completedNotesQuantity = storeItems.filter(
-			(item) => item.isCompleted
-		).length;
+		const completedNotes = storeItems.filter((item) => item.isCompleted).length;
 
 		return {
-			total: storeItems.length,
-			completed: completedNotesQuantity,
+			notesQuantity: storeItems.length,
+			completedNotesQuantity: completedNotes,
 		};
 	}
 }

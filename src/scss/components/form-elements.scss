@@ -13,7 +13,7 @@
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background-color: $activeColorDark;
+		background-color: var(--active-color-dark);
 		border-radius: 8px;
 	}
 }
@@ -45,7 +45,7 @@
 	&:before {
 		height: 20px;
 		width: 20px;
-		border: 2px solid $btnColor;
+		border: 2px solid var(--btn-color);
 		border-radius: 50%;
 		right: 6px;
 		top: 5px;
@@ -54,7 +54,7 @@
 	&:after {
 		height: 10px;
 		width: 2px;
-		background-color: $btnColor;
+		background-color: var(--btn-color);
 		bottom: 5px;
 		right: 6px;
 		transform: rotate(-45deg);
@@ -63,7 +63,7 @@
 
 .search-input {
 	background-color: rgb(184, 184, 184);
-	box-shadow: 0 0 25px 0 $btnColor, 0 20px 25px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 25px 0 var(--btn-color), 0 20px 25px 0 rgba(0, 0, 0, 0.2);
 	transition: all 0.8s ease-out;
 	opacity: 0;
 	width: 30px;
@@ -78,19 +78,19 @@
 	}
 }
 
-.search-input:hover ~ .search-icon {
+.search-input:hover + .search-icon {
 	&:before,
 	&:after {
-		background-color: #fff;
+		background-color: var(--text-color);
 	}
 }
 
-.search-input:focus ~ .search-icon {
-	background-color: $activeColorDark;
+.search-input:focus + .search-icon {
+	background-color: var(--active-color-dark);
 	&:before {
 		border: none;
 		border-radius: 0%;
-		background-color: #fff;
+		background-color: var(--text-color);
 		width: 20px;
 		height: 2px;
 		top: 17px;
@@ -102,7 +102,7 @@
 		height: 20px;
 		right: 16px;
 		bottom: 6px;
-		background-color: #fff;
+		background-color: var(--text-color);
 	}
 }
 
@@ -114,10 +114,11 @@
 	min-width: 310px;
 	max-width: 500px;
 	max-height: 80vh;
-	border: 2px solid $activeColorDark;
+	border: 2px solid var(--active-color-dark);
 	border-radius: 24px;
 	padding: 1rem;
-	background-color: #2d2d3d;
+	background-color: #181836;
+	background: var(--form-gradient);
 	text-align: center;
 	overflow-y: auto;
 	opacity: 0;
@@ -127,6 +128,10 @@
 		margin-bottom: 1rem;
 	}
 
+	&__message--invalid {
+		color: var(--error-color);
+	}
+
 	.close-btn {
 		position: absolute;
 		top: 0.5rem;
@@ -134,7 +139,7 @@
 		font-size: 1.2rem;
 		transition: color 0.2s ease-out;
 		&:hover {
-			color: $activeColor;
+			color: var(--active-color);
 		}
 	}
 }
@@ -150,12 +155,12 @@
 }
 
 .form::-webkit-scrollbar-thumb {
-	background: $activeColorDark;
+	background: var(--active-color-dark);
 	border-radius: 16px;
 }
 
 .form-input {
-	border: 1px solid $borderColor;
+	border: 1px solid var(--border-color);
 	padding: 0.8rem 1rem;
 }
 
@@ -199,15 +204,15 @@
 				width: 100%;
 				left: 0;
 				right: auto;
-				background-color: $activeColor;
+				background-color: var(--active-color);
 			}
 		}
 	}
 
 	input:checked + label {
-		color: $activeColor;
+		color: var(--active-color);
 		&:before {
-			background-color: $activeColor;
+			background-color: var(--active-color);
 			width: 100%;
 		}
 	}
@@ -241,7 +246,7 @@
 	}
 	textarea::-webkit-scrollbar-thumb {
 		border-radius: 8px;
-		background-color: $activeColorDark;
+		background-color: var(--active-color-dark);
 	}
 }
 
@@ -266,7 +271,7 @@
 		margin: 0 auto;
 		padding: 0.4rem;
 		text-align: left;
-		border-bottom: 2px solid $activeColorDark;
+		border-bottom: 2px solid var(--active-color-dark);
 		p {
 			display: block;
 			max-width: 80%;
@@ -275,7 +280,7 @@
 	}
 }
 
-.options-controls {
+.options-control {
 	text-align: center;
 	margin: 0 auto;
 

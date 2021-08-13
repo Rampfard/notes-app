@@ -16,10 +16,16 @@ export default class Note {
 		'Dec',
 	];
 
+	constructor(formData, actions) {
+		this.formData = formData;
+		this.actions = actions;
+	}
+
 	createNote(formData) {
 		const note = createElement('li');
 		note.classList.add('note');
 
+		console.log(formData);
 		if (formData.type !== 'note') {
 			note.classList.add(formData.type);
 		}
@@ -33,7 +39,7 @@ export default class Note {
 		note.dataset.type = type;
 		note.id = id;
 
-		const [day, date, month] = formData.date.split(' ');
+		const date = new Date();
 
 		note.innerHTML = `
 			<h2 class="note__title">
@@ -41,7 +47,7 @@ export default class Note {
 			</h2>
 			<div class="note__content"></div>
 			<div class="note__info">
-				<div class="note__date">${date} ${month}</div>
+				<div class="note__date">${this.months[date.getMonth()]} ${date.getDate()}</div>
 				<div class="note__type">${type}</div>
 			</div>
 		`;
@@ -50,7 +56,6 @@ export default class Note {
 
 		if (type !== 'todo') {
 			const description = createElement('p');
-
 			description.innerText = formData.description;
 			description.classList.add('note__description');
 			noteContentEl.insertAdjacentElement('afterbegin', description);
