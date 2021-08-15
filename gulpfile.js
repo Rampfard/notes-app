@@ -22,8 +22,10 @@ function cleanDist() {
 	return del(dist);
 }
 
-function copyHTML() {
-	return src('src/index.html').pipe(dest(dist)).pipe(browserSync.stream());
+function copyHTMLAndFavicon() {
+	return src(['src/index.html', 'src/favicon.*'])
+		.pipe(dest(dist))
+		.pipe(browserSync.stream());
 }
 
 function copyImages() {
@@ -171,13 +173,13 @@ exports.build = series(
 	prodJs,
 	copyImages,
 	copyFonts,
-	copyHTML
+	copyHTMLAndFavicon
 );
 exports.default = parallel(
 	scripts,
 	cssLib,
 	styles,
-	copyHTML,
+	copyHTMLAndFavicon,
 	copyImages,
 	copyFonts,
 	browsersync,
