@@ -35,6 +35,16 @@ body.gray-theme {
 	background-color: var(--main-color);
 }
 
+body::-webkit-scrollbar {
+	background: transparent;
+	width: 6px;
+}
+
+body::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background: var(--active-color-dark);
+}
+
 h1,
 h2,
 h3,
