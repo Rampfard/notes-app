@@ -14,8 +14,6 @@ export default class App {
 		const actionsHandler = new Actions(store, ui);
 		const ui = new UI(noteTemplate, mainForm, actionsHandler);
 
-		window.addEventListener('DOMContentLoaded', () => {
-			ui.init(store.getLocalStorage());
-		});
+		ui.init(store.getLocalStorage());
 	}
 }

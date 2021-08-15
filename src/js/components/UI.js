@@ -230,7 +230,7 @@ export default class UI {
 				} else {
 					let options = [...getElements('.note-option', note)];
 
-					if (options.length > 1) {
+					if (options.length > 0) {
 						options = options.map((op) => op.id);
 					}
 					this.actions.toggleCompleteStatus(noteId, options);
