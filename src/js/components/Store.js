@@ -1,9 +1,8 @@
 export default class Store {
-	items;
-
 	constructor(name) {
 		this.name = name;
 		this.store = window.localStorage;
+		this.items;
 	}
 
 	getLocalStorage() {
@@ -12,6 +11,14 @@ export default class Store {
 
 	setLocalStorage(newItems) {
 		this.store.setItem(this.name, JSON.stringify((this.items = newItems)));
+	}
+
+	setTheme(themeName) {
+		this.store.setItem('Theme', themeName);
+	}
+
+	getTheme() {
+		return this.store.getItem('Theme');
 	}
 
 	updateItem(newItem) {

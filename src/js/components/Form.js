@@ -1,4 +1,4 @@
-import { getEl, getElements, createElement } from '../utils/DOMHelper';
+import { getEl, getElements, createElement } from '../utils/DOMHelpers';
 
 export default class Form {
 	constructor(formSelector) {
@@ -16,11 +16,7 @@ export default class Form {
 	}
 
 	getFormData() {
-		// const typeInputs = getElements('input[type="radio"]', this.form);
 		const options = getElements('.option p', this.form);
-
-		// const type = [...typeInputs].filter((input) => input.checked)[0].dataset
-		// 	.type;
 
 		const formData = {
 			id: `n${Math.random().toString().slice(4)}`,
@@ -39,13 +35,15 @@ export default class Form {
 			formData.description = this.descriptionInput.value;
 		}
 
-		formData.options = [...options].map((el) => {
-			return {
-				text: el.textContent,
-				isCompleted: false,
-				id: 'opt' + Math.random().toString().slice(4),
-			};
-		});
+		if (options.length > 0) {
+			formData.options = [...options].map((el) => {
+				return {
+					text: el.textContent,
+					isCompleted: false,
+					id: 'opt' + Math.random().toString().slice(4),
+				};
+			});
+		}
 
 		this.clearForm();
 
@@ -67,14 +65,16 @@ export default class Form {
 
 		if (options.length < 1 && noteType !== 'note') {
 			const message = createElement('div');
-			message.classList.add('form__message--invalid');
+			message.classList.add('form-message', 'form__message--invalid');
 
 			message.innerText = 'You need to add at least 1 option';
 
 			this.formBody.append(message);
 			setTimeout(() => {
 				message.remove();
-			}, 3000);
+			}, 4000);
+
+			return false;
 		}
 
 		return true;

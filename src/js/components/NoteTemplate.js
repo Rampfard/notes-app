@@ -1,4 +1,4 @@
-import { getEl, createElement } from '../utils/DOMHelper';
+import { getEl, createElement } from '../utils/DOMHelpers';
 
 export default class Note {
 	months = [
@@ -36,13 +36,15 @@ export default class Note {
 		const [day, date, month] = formData.date.split(' ');
 
 		note.innerHTML = `
-			<h2 class="note__title">
-				${title}
-			</h2>
-			<div class="note__content"></div>
-			<div class="note__info">
-				<div class="note__date">${date} ${month}</div>
-				<div class="note__type">${type}</div>
+			<div class="note__inner">
+				<h2 class="note__title">
+					${title}
+				</h2>
+				<div class="note__content"></div>
+				<div class="note__info">
+					<div class="note__date">${date} ${month}</div>
+					<div class="note__type">${type}</div>
+				</div>
 			</div>
 		`;
 

@@ -48,8 +48,22 @@ export default class Actions {
 		return this.store.getItemsCount();
 	}
 
+	setTheme(themeName) {
+		this.store.setTheme(themeName);
+	}
+
+	getTheme() {
+		return this.store.getTheme('Theme');
+	}
+
 	toggleCompleteStatus(id, completedOptions = []) {
 		const existingItem = this.store.findItem(id);
+
+		if (!existingItem.options) {
+			existingItem.isCompleted = !existingItem.isCompleted;
+			this.store.updateItem(existingItem);
+			return;
+		}
 
 		existingItem.options = existingItem.options.map((op) => {
 			const shouldUpdate = completedOptions.includes(op.id);

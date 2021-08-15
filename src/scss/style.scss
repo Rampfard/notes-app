@@ -5,14 +5,17 @@
 
 @import './components/buttons';
 @import './components/form-elements';
-@import './components/context-menu';
-@import './components/notification';
 
 // Blocks
 
 @import './blocks/header';
 @import './blocks/main';
+@import './blocks/tabs';
 @import './blocks/notes';
-
+@import './blocks/theme-picker';
+@import './blocks/start-screen';
+@import './blocks/info-block';
+@import './blocks/notifications';
+@import './blocks/context-menu';
 
 @import 'media';

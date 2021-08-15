@@ -1,4 +1,4 @@
-import { createElement } from '../utils/DOMHelper';
+import { createElement } from '../utils/DOMHelpers';
 
 export default class Notification {
 	constructor(description, type) {

@@ -1,31 +1,34 @@
 .notes {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-gap: 10px;
+	grid-template-columns: repeat(auto-fit, minmax(10rem, 20rem));
 	justify-content: center;
-	align-items: stretch;
+	grid-auto-rows: 15px;
 }
 
 .note {
 	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
 	max-width: 25rem;
 	min-width: 15rem;
 	background-image: var(--main-gradient);
 	border-radius: 24px;
-	padding: 1rem;
-	margin: 1rem;
-	border: 2px solid transparent;
-	word-break: break-all;
+	border: 2px solid var(--main-color);
+	word-break: break-word;
 	transition: all 0.3s ease;
+	&__inner {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding: 1rem;
+	}
+
 	&__title {
-		margin-bottom: 1rem;
+		margin-bottom: 0.8em;
 	}
 
 	&__title.editing {
 		position: relative;
-		padding: 1rem;
+		padding: 0.5rem;
 	}
 
 	&__content {
@@ -36,6 +39,7 @@
 
 	&__description {
 		position: relative;
+		padding: 0.5rem 0;
 	}
 
 	textarea.edit {
@@ -66,9 +70,11 @@
 		transition: all 0.3s ease-out;
 		p {
 			max-width: 90%;
+			padding-left: 2rem;
 		}
 		span {
-			position: relative;
+			position: absolute;
+			left: 0;
 			display: inline-block;
 			width: 20px;
 			height: 20px;
@@ -87,7 +93,7 @@
 			&:before,
 			&:after {
 				position: absolute;
-				left: 45%;
+				left: 40%;
 				top: 45%;
 				content: '';
 				width: 2px;
@@ -102,19 +108,28 @@
 			}
 
 			&:before {
-				transform: translate(-50%, -20%) rotate(-45deg);
+				top: 50%;
+				transform: translate(-50%, -50%) rotate(-45deg);
 			}
 		}
 	}
 }
 
+.note.select {
+	user-select: text;
+	.note-option {
+		cursor: default;
+	}
+}
+
 .note.completed {
 	border: 2px solid var(--active-color);
+	box-shadow: 0 0 6px 1px var(--active-color);
 }
 
 .note.targets {
 	.note__description {
-		margin-bottom: 1.5rem;
+		margin-bottom: 1rem;
 	}
 
 	.note-option.completed {

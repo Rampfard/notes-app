@@ -1,12 +1,16 @@
 .main {
 	padding-top: 4rem;
+	height: 100%;
+}
+
+.tabs-container {
+	margin: 0 auto 4rem;
+	max-width: 80%;
 }
 
 .notes-tabs {
-	margin: 0 auto 4rem;
 	display: flex;
 	justify-content: space-between;
-	max-width: 80%;
 	font-size: 1.3rem;
 }
 

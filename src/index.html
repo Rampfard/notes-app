@@ -4,13 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Notes App</title>
-  <meta name="description" content="">
+  <meta name="description" content="May the notes be with you">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta property="og:title" content="">
-  <meta property="og:type" content="">
+  <meta property="og:title" content="Notes">
+  <meta property="og:type" content="app">
   <meta property="og:url" content="">
   <meta property="og:image" content="">
+
+  <link type="image/png" sizes="16x16" rel="icon" href="favicon.png">
+  <link type="image/png" sizes="32x32" rel="icon" href="favicon.png">
+  <link type="image/png" sizes="96x96" rel="icon" href="favicon.png">
+  <link type="image/png" sizes="120x120" rel="icon" href="favicon.png">
 
   <link rel="stylesheet" href="css/style.css">
 
@@ -45,73 +50,71 @@
           <label class="search-icon"></label>
         </div>
         <div class="header__settings">
-          <button class="settings-btn btn" id="settings-btn"></button>
+          <button class="settings-btn btn" id="settings-btn">
+            <span></span>
+          </button>
           <div class="settings-menu">
-            <button class="btn settings-menu__btn" id="toggle-theme-btn">Toggle Theme</button>
+            <button class="btn settings-menu__btn" id="change-theme-btn">Change theme</button>
+            <button class="btn settings-menu__btn" id="kitty-btn">Kitty</button>
+            <button class="btn settings-menu__btn" id="info-btn">Info</button>
           </div>
         </div>
       </div>
     </header>
     <main class="main">
-      <ul class="notes-tabs">
-        <li class="notes-tab active" data-type="all">
-          All
-        </li>
-        <li class="notes-tab" data-type="completed">
-          Completed
-        </li>
-        <li class="notes-tab" data-type="todo">
-          ToDo
-        </li>
-        <li class="notes-tab" data-type="targets">
-          Targets
-        </li>
-        <li class="notes-tab" data-type="note">
-          Notes
-        </li>
-      </ul>
+      <div class="tabs-container">
+        <button id="tabs-btn" class="btn tabs-btn">
+          <svg width="12" height="6" viewBox="0 0 12 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M5.99976 5.83328C5.80976 5.83328 5.62059 5.76911 5.46643 5.63995L0.466428 1.47328C0.113095 1.17911 0.0647615 0.653279 0.359761 0.299946C0.653928 -0.0533876 1.17893 -0.100888 1.53309 0.193279L6.00893 3.92328L10.4773 0.327446C10.8356 0.0391124 11.3606 0.0957791 11.6489 0.454113C11.9373 0.812446 11.8806 1.33661 11.5223 1.62578L6.52226 5.64911C6.36976 5.77161 6.18476 5.83328 5.99976 5.83328Z">
+            </path>
+          </svg>
+          <span>All</span>
+        </button>
+        <ul class="notes-tabs">
+          <li class="notes-tab active" data-type="all">
+            All
+          </li>
+          <li class="notes-tab" data-type="completed">
+            Completed
+          </li>
+          <li class="notes-tab" data-type="todo">
+            ToDo
+          </li>
+          <li class="notes-tab" data-type="targets">
+            Targets
+          </li>
+          <li class="notes-tab" data-type="note">
+            Notes
+          </li>
+        </ul>
+      </div>
+      <div class="start-screen">
+        <div class="start-screen__square"></div>
+        <div class="start-screen__circle"></div>
+        <div class="start-screen__rhombus"></div>
+        <div class="start-screen__note">
+          <div class="start-screen__rings">
+            <span class="start-screen__ring"></span>
+            <span class="start-screen__ring"></span>
+            <span class="start-screen__ring"></span>
+            <span class="start-screen__ring"></span>
+          </div>
+          <div class="start-screen__lines">
+            <span class="start-screen__line"></span>
+            <span class="start-screen__line"></span>
+            <span class="start-screen__line"></span>
+            <span class="start-screen__line"></span>
+          </div>
+        </div>
+        <h2 class="start-screen__title">Daily Notes</h2>
+        <p class="start-screen__descr">Take notes, reminders, set targets and collect resourses.</p>
+        <button id="start-btn" class="btn start-screen__btn" type="button">
+          Create First Note
+        </button>
+      </div>
       <ul class="notes" id="notes">
-        <li class="note" id="n1" data-type="todo">
-          <h2 class="note__title">
-            Reminder
-          </h2>
-          <div class="note__content">
-            <p class="note__description">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            </p>
-          </div>
-          <div class="note__info">
-            <div class="note__date">
-              Jun 17
-            </div>
-            <div class="note__type">
-              ToDo
-            </div>
-          </div>
-        </li>
-        <li class="note" id="n2" data-type="todo">
-          <h2 class="note__title">
-            Reminder
-          </h2>
-          <div class="note__content">
-            <p class="note__description">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores veritatis sapiente qui tempore! Quod
-              labore
-              expedita quae recusandae nostrum amet quibusdam et, similique saepe provident ea minima accusantium,
-              dolorem
-              necessitatibus! Lorem ipsum dolor sit amet. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est,
-              libero.
-            </p>
-          </div>
-          <div class="note__info">
-            <div class="note__date">
-              Jun 17
-            </div>
-            <div class="note__type">
-              ToDo
-            </div>
-          </div>
-        </li>
+        <!-- rendered notes -->
       </ul>
       <ul id="note-detail" class="note-detail">
         <!--   cloned note   -->
@@ -124,11 +127,32 @@
         <h3 class="form-choice__title">Choose Note Type</h3>
         <div class="form-selectors">
           <input type="radio" name="note-type" id="toDo-picker" data-type="todo">
-          <label for="toDo-picker">To Do</label>
+          <label for="toDo-picker">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path fill="currentColor"
+                d="M336 64h-88.6c.4-2.6.6-5.3.6-8 0-30.9-25.1-56-56-56s-56 25.1-56 56c0 2.7.2 5.4.6 8H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 32c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm160 432c0 8.8-7.2 16-16 16H48c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16h48v20c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12V96h48c8.8 0 16 7.2 16 16v352zM112 328c-13.3 0-24 10.7-24 24s10.7 24 24 24 24-10.7 24-24-10.7-24-24-24zm168 8H168c-4.4 0-8 3.6-8 8v16c0 4.4 3.6 8 8 8h112c4.4 0 8-3.6 8-8v-16c0-4.4-3.6-8-8-8zm-153.8-65.6l64.2-63.6c2.1-2.1 2.1-5.5 0-7.6l-12.6-12.7c-2.1-2.1-5.5-2.1-7.6 0l-47.6 47.2-20.6-20.9c-2.1-2.1-5.5-2.1-7.6 0l-12.7 12.6c-2.1 2.1-2.1 5.5 0 7.6l37.1 37.4c1.9 2.1 5.3 2.1 7.4 0zM280 240h-77.6l-32.3 32H280c4.4 0 8-3.6 8-8v-16c0-4.4-3.6-8-8-8z">
+              </path>
+            </svg>
+            <span>To Do</span>
+          </label>
           <input type="radio" name="note-type" id="targets-picker" data-type="targets">
-          <label for="targets-picker">Targets</label>
+          <label for="targets-picker">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path fill="currentColor"
+                d="M280 240H168c-4.4 0-8 3.6-8 8v16c0 4.4 3.6 8 8 8h112c4.4 0 8-3.6 8-8v-16c0-4.4-3.6-8-8-8zm0 96H168c-4.4 0-8 3.6-8 8v16c0 4.4 3.6 8 8 8h112c4.4 0 8-3.6 8-8v-16c0-4.4-3.6-8-8-8zM112 232c-13.3 0-24 10.7-24 24s10.7 24 24 24 24-10.7 24-24-10.7-24-24-24zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24 24-10.7 24-24-10.7-24-24-24zM336 64h-88.6c.4-2.6.6-5.3.6-8 0-30.9-25.1-56-56-56s-56 25.1-56 56c0 2.7.2 5.4.6 8H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 32c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm160 432c0 8.8-7.2 16-16 16H48c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16h48v20c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12V96h48c8.8 0 16 7.2 16 16v352z">
+              </path>
+            </svg>
+            <span>Targets</span>
+          </label>
           <input type="radio" name="note-type" id="note-picker" data-type="note" checked>
-          <label for="note-picker">Note</label>
+          <label for="note-picker">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path fill="currentColor"
+                d="M336 64h-88.6c.4-2.6.6-5.3.6-8 0-30.9-25.1-56-56-56s-56 25.1-56 56c0 2.7.2 5.4.6 8H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 32c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm160 432c0 8.8-7.2 16-16 16H48c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16h48v20c0 6.6 5.4 12 12 12h168c6.6 0 12-5.4 12-12V96h48c8.8 0 16 7.2 16 16z">
+              </path>
+            </svg>
+            <span>Note</span>
+          </label>
         </div>
       </div>
       <div class="form-control">
@@ -142,51 +166,169 @@
             name="note-text"></textarea>
         </div>
       </div>
-      <button id="create-btn" type="submit" class="btn form-btn">Create Note</button>
+      <button id="form-create-btn" type="submit" class="btn form-btn form__create-btn">Create Note</button>
     </form>
   </div>
 
-  <button type="button" class="btn create-note" id="create-note">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-      <path
-        d="M369.9,97.9,286,14A48,48,0,0,0,252.1-.1H48A48.16,48.16,0,0,0,0,48V464a48,48,0,0,0,48,48H336a48,48,0,0,0,48-48V131.9A48.23,48.23,0,0,0,369.9,97.9Zm-22.6,22.7a15.73,15.73,0,0,1,4.2,7.4H256V32.5a15.73,15.73,0,0,1,7.4,4.2ZM336,480H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32H224V136a23.94,23.94,0,0,0,24,24H352V464A16,16,0,0,1,336,480ZM288,300v8a12,12,0,0,1-12,12H208v68a12,12,0,0,1-12,12h-8a12,12,0,0,1-12-12V320H108a12,12,0,0,1-12-12v-8a12,12,0,0,1,12-12h68V220a12,12,0,0,1,12-12h8a12,12,0,0,1,12,12v68h68A12,12,0,0,1,288,300Z">
-      </path>
+  <button type="button" class="btn create-note-btn" id="create-note">
+    <svg class="note-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <g>
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M14.7366 2.76193H8.08455C6.00455 2.75393 4.29955 4.41093 4.25055 6.49093V17.3399C4.21555 19.3899 5.84855 21.0809 7.89955 21.1169C7.96055 21.1169 8.02255 21.1169 8.08455 21.1149H16.0726C18.1416 21.0939 19.8056 19.4089 19.8026 17.3399V8.03993L14.7366 2.76193Z"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M14.4742 2.75012V5.65912C14.4742 7.07912 15.6232 8.23012 17.0432 8.23412H19.7972" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M14.2937 12.9142H9.39368" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M11.8445 15.3639V10.4639" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+      </g>
     </svg>
   </button>
 
-  <div class="notifications" id="notifications"></div>
 
+  <div id="theme-modal" class="theme-modal">
+    <div class="theme-picker">
+      <input id="aurora-theme" type="radio" name="theme">
+      <label for="aurora-theme">
+        <img class="theme-picker__img" src="./img/aurora.jpg" alt="aurora">
+        <span class="theme-picker__title">Aurora</span>
+      </label>
+    </div>
+    <div class="theme-picker">
+      <input id="gray-theme" type="radio" name="theme">
+      <label for="gray-theme">
+        <img class="theme-picker__img" src="./img/gray.png" alt="gray">
+        <span class="theme-picker__title">Gray</span></label>
+    </div>
+  </div>
+
+  <div class="info-block">
+    <h3 class="info-block__title">Info</h3>
+    <ul class="info-block__list">
+      <li class="info-block__text desktop">
+        <span>Right click</span> on note to show <span>note menu</span>
+      </li>
+      <li class="info-block__text desktop">
+        <span>Double click</span> on note title or description <span>to edit</span> it
+      </li>
+      <li class="info-block__text mobile">
+        <span>Double touch</span> on note title or description <span>to edit</span> it
+      </li>
+      <li class="info-block__text mobile">
+        <span>Long touch</span> on note to show <span>note menu</span>
+      </li>
+    </ul>
+  </div>
+  <div class="notifications" id="notifications"></div>
   <div class="backdrop"></div>
+  <div class="kitty">
+    <img src="img/kitty.png" alt="Kitty for Lizushka">
+  </div>
 
   <template id="context-menu-template">
     <div id="context-menu" class="context-menu">
-      <button id="delete-note-btn" class="btn context-menu__btn" type="button">
-        <span>Remove note</span>
-      </button>
-      <button id="choose-text-btn" class="btn context-menu__btn" type="button">
-        <span>Choose text</span>
-      </button>
       <button id="complete-note-btn" class="btn context-menu__btn" type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <g class="fa-group">
-            <path fill="currentColor"
-              d="M166.57 282.71L44 159.21a17.87 17.87 0 0 1 .18-25.2l42.1-41.77a17.87 17.87 0 0 1 25.2.18l68.23 68.77L336.87 5.11a17.88 17.88 0 0 1 25.21.18L404 47.41a17.88 17.88 0 0 1-.18 25.21L191.78 282.89a17.88 17.88 0 0 1-25.21-.18z"
-              class="svg-secondary"></path>
-            <path fill="currentColor"
-              d="M504.5 172a25.86 25.86 0 0 1 0 36.42L210.1 504.46a25.48 25.48 0 0 1-36.2 0L7.5 337.1a25.84 25.84 0 0 1 0-36.41l36.2-36.41a25.48 25.48 0 0 1 36.2 0L192 377l240.1-241.46a25.5 25.5 0 0 1 36.2 0L504.5 172z"
-              class="svg-primary"></path>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M16.3344 2.75018H7.66537C4.64437 2.75018 2.75037 4.88918 2.75037 7.91618V16.0842C2.75037 19.1112 4.63537 21.2502 7.66537 21.2502H16.3334C19.3644 21.2502 21.2504 19.1112 21.2504 16.0842V7.91618C21.2504 4.88918 19.3644 2.75018 16.3344 2.75018Z"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M8.43982 12.0002L10.8138 14.3732L15.5598 9.6272" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
           </g>
         </svg>
         <span>Toggle complete</span>
       </button>
-      <button id="copy-description-btn" class="btn context-menu__btn" type="button">
-        <span>Copy description</span>
+      <button id="edit-title-btn" class="btn context-menu__btn" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path d="M13.7473 20.4429H20.9999" stroke="#130F26" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M12.78 3.79479C13.5557 2.86779 14.95 2.73186 15.8962 3.49173C15.9485 3.53296 17.6295 4.83879 17.6295 4.83879C18.669 5.46719 18.992 6.80311 18.3494 7.82259C18.3153 7.87718 8.81195 19.7645 8.81195 19.7645C8.49578 20.1589 8.01583 20.3918 7.50291 20.3973L3.86353 20.443L3.04353 16.9723C2.92866 16.4843 3.04353 15.9718 3.3597 15.5773L12.78 3.79479Z"
+              stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.0208 6.00092L16.473 10.188" stroke="#130F26" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </g>
+        </svg>
+        <span>Edit title</span>
+      </button>
+      <button id="edit-description-btn" class="btn context-menu__btn" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path
+              d="M11.4922 2.789H7.75324C4.67824 2.789 2.75024 4.966 2.75024 8.048V16.362C2.75024 19.444 4.66924 21.621 7.75324 21.621H16.5772C19.6622 21.621 21.5812 19.444 21.5812 16.362V12.334"
+              stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M8.82763 10.9209L16.3006 3.44793C17.2316 2.51793 18.7406 2.51793 19.6716 3.44793L20.8886 4.66493C21.8196 5.59593 21.8196 7.10593 20.8886 8.03593L13.3796 15.5449C12.9726 15.9519 12.4206 16.1809 11.8446 16.1809H8.09863L8.19263 12.4009C8.20663 11.8449 8.43363 11.3149 8.82763 10.9209Z"
+              stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M15.165 4.60254L19.731 9.16854" stroke="#130F26" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </g>
+        </svg>
+        <span>Edit description</span>
       </button>
       <button id="copy-title-btn" class="btn context-menu__btn" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M14.7366 2.76181H8.08465C6.00465 2.75381 4.30065 4.41081 4.25065 6.49081V17.2278C4.20565 19.3298 5.87365 21.0698 7.97465 21.1148C8.01165 21.1148 8.04865 21.1158 8.08465 21.1148H16.0726C18.1626 21.0408 19.8146 19.3188 19.8026 17.2278V8.03781L14.7366 2.76181Z"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14.4749 2.75012V5.65912C14.4749 7.07912 15.6239 8.23012 17.0439 8.23412H19.7979"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.6418 15.9498V9.90881" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M9.29614 13.5944L11.6411 15.9494L13.9861 13.5944" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </g>
+        </svg>
         <span>Copy title</span>
+      </button>
+      <button id="copy-description-btn" class="btn context-menu__btn" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M14.7366 2.76181H8.08465C6.00465 2.75381 4.30065 4.41081 4.25065 6.49081V17.2278C4.20565 19.3298 5.87365 21.0698 7.97465 21.1148C8.01165 21.1148 8.04865 21.1158 8.08465 21.1148H16.0726C18.1626 21.0408 19.8146 19.3188 19.8026 17.2278V8.03781L14.7366 2.76181Z"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14.4749 2.75012V5.65912C14.4749 7.07912 15.6239 8.23012 17.0439 8.23412H19.7979"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.6418 15.9498V9.90881" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M9.29614 13.5944L11.6411 15.9494L13.9861 13.5944" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </g>
+        </svg>
+        <span>Copy description</span>
+      </button>
+      <button id="select-text-btn" class="btn context-menu__btn" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path d="M15.7161 16.2234H8.49609" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M15.7161 12.0369H8.49609" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.2511 7.86011H8.49609" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M15.9085 2.74982C15.9085 2.74982 8.23149 2.75382 8.21949 2.75382C5.45949 2.77082 3.75049 4.58682 3.75049 7.35682V16.5528C3.75049 19.3368 5.47249 21.1598 8.25649 21.1598C8.25649 21.1598 15.9325 21.1568 15.9455 21.1568C18.7055 21.1398 20.4155 19.3228 20.4155 16.5528V7.35682C20.4155 4.57282 18.6925 2.74982 15.9085 2.74982Z"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+        </svg>
+        <span>Select text</span>
+      </button>
+      <button id="remove-note-btn" class="btn context-menu__btn" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path
+              d="M19.325 9.4682C19.325 9.4682 18.782 16.2032 18.467 19.0402C18.317 20.3952 17.48 21.1892 16.109 21.2142C13.5 21.2612 10.888 21.2642 8.28003 21.2092C6.96103 21.1822 6.13803 20.3782 5.99103 19.0472C5.67403 16.1852 5.13403 9.4682 5.13403 9.4682"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M20.7082 6.23969H3.75024" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M17.4406 6.23967C16.6556 6.23967 15.9796 5.68467 15.8256 4.91567L15.5826 3.69967C15.4326 3.13867 14.9246 2.75067 14.3456 2.75067H10.1126C9.53358 2.75067 9.02558 3.13867 8.87558 3.69967L8.63258 4.91567C8.47858 5.68467 7.80258 6.23967 7.01758 6.23967"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+        </svg>
+        <span>Remove note</span>
       </button>
     </div>
   </template>
+
   <script src="js/script.js"></script>
 </body>
 

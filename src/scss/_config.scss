@@ -9,17 +9,22 @@ $yellow: #e8c49f;
 $darkPink: #ae66c8;
 
 :root {
+	--note-icon-color: rgba(115, 134, 173, 0.2);
+	--note-icon-shape-color: rgba(163, 163, 163, 0.7);
+	--screen-bg-color: rgba(0, 0, 0, 0.5);
 	--main-color: #302b63;
 	--text-color: #d0d0d3;
-	--btn-color: #767183;
+	--btn-text-color: #767183;
+	--btn-color: #706fc8;
 	--active-color-light: #32a5e0;
-	--active-color: #edb853;
+	--active-color: #ebce58;
 	--active-color-dark: #706fc8;
-	--active-note-color: #353545;
-	--error-color: #c75454;
+	--error-color: #cc4444;
 	--border-color: #a4a4ce;
 	--main-gradient: linear-gradient(25deg, #0f0c29, #302b63);
-	--form-gradient: linear-gradient(25deg, #4527a0, #000070);
+	--form-gradient: linear-gradient(125deg, #201b50 0%, #170c2b 74%);
+	--btn-gradient: linear-gradient(-45deg, #6357bb, #5f4091);
+	--orange-gradient: linear-gradient(-45deg, #d77d75, #e2b18f);
 }
 
 // Fonts
@@ -57,3 +62,38 @@ $darkPink: #ae66c8;
 
 @include font('Poppins-Light', normal, 300, '../fonts/Poppins-Light.woff2');
 @include font('Poppins-Regular', normal, 400, '../fonts/Poppins-Regular.woff2');
+
+// mixins
+
+@mixin shape($borderRadius, $background, $left, $top) {
+	position: absolute;
+	height: 45px;
+	width: 45px;
+	left: $left;
+	top: $top;
+	background: $background;
+	border-radius: $borderRadius;
+	&:before,
+	&:after {
+		position: absolute;
+		content: '';
+		background: inherit;
+		border-radius: inherit;
+	}
+
+	&:before {
+		height: 130%;
+		width: 130%;
+		opacity: 0.7;
+		left: -7px;
+		top: -7px;
+	}
+
+	&:after {
+		height: 160%;
+		width: 160%;
+		opacity: 0.3;
+		left: -14px;
+		top: -14px;
+	}
+}

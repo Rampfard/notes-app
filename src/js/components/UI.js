@@ -1,5 +1,5 @@
 import Notification from './Notification';
-import { getEl, getElements, createElement } from '../utils/DOMHelper';
+import { getEl, getElements, createElement } from '../utils/DOMHelpers';
 export default class UI {
 	constructor(noteTemplate, formInstance, actions) {
 		this.actions = actions;
@@ -9,15 +9,20 @@ export default class UI {
 		this.noteList = getEl('.notes');
 		this.tabs = getEl('.notes-tabs');
 		this.createNoteBtn = getEl('#create-note');
-		this.settingsBtn = getEl('#settings-btn');
 		this.searchInput = getEl('#search-input');
 		this.form = getEl('#form');
 		this.editMenu = getEl('.header__edit');
+		this.settingsMenu = getEl('.header__settings');
 		this.tabs = getEl('.notes-tabs');
-		this.notifications = getEl('#notifications');
 		this.backdrop = getEl('.backdrop');
+		this.notifications = getEl('#notifications');
 		this.contextMenuTemplate = getEl('#context-menu-template');
 		this.noteDetail = getEl('#note-detail');
+		this.themeModal = getEl('#theme-modal');
+		this.tabsBtn = getEl('#tabs-btn');
+		this.startScreen = getEl('.start-screen');
+		this.infoBlock = getEl('.info-block');
+		this.kitty = getEl('.kitty');
 
 		this.bindEventsToElements();
 	}
@@ -27,8 +32,14 @@ export default class UI {
 			return;
 		}
 
+		if (this.startScreen) {
+			this.startScreen.classList.add('hiden');
+		}
+
 		const newNote = this.noteTemplate.createNote(formData);
 		this.noteList.insertAdjacentElement('afterbegin', newNote);
+
+		this.resizeAllNotes();
 	}
 
 	createNotification(type, description) {
@@ -44,23 +55,37 @@ export default class UI {
 		}, 4000);
 	}
 
-	editNoteHandler(e) {
-		const target = e.target;
+	resizeNote(item) {
+		const grid = this.noteList;
+		const rowHeight = parseInt(
+			window.getComputedStyle(grid).getPropertyValue('grid-auto-rows')
+		);
+		const rowGap = parseInt(
+			window.getComputedStyle(grid).getPropertyValue('grid-row-gap')
+		);
+		const rowSpan = Math.ceil(
+			(getEl('.note__inner', item).getBoundingClientRect().height + rowGap) /
+				(rowHeight + rowGap)
+		);
 
-		if (
-			target.closest('.note') &&
-			(target.classList.contains('note__description') ||
-				target.classList.contains('note__title'))
-		) {
-			target.classList.add('editing');
+		item.style.gridRowEnd = 'span ' + rowSpan;
+	}
 
-			const textarea = createElement('textarea');
-			textarea.classList.add('input', 'form-input', 'edit');
+	resizeAllNotes() {
+		getElements('.note', this.noteList).forEach((note) => {
+			this.resizeNote(note);
+		});
+	}
 
-			textarea.value = target.innerText;
-			target.appendChild(textarea);
-			textarea.focus();
-		}
+	editNote(target) {
+		target.classList.add('editing');
+
+		const textarea = createElement('textarea');
+		textarea.classList.add('input', 'form-input', 'edit');
+
+		textarea.value = target.innerText;
+		target.appendChild(textarea);
+		textarea.focus();
 	}
 
 	editNoteFinished(id, contentEl) {
@@ -71,6 +96,8 @@ export default class UI {
 
 		contentEl.classList.remove('editing');
 		textarea.remove();
+
+		this.resizeAllNotes();
 	}
 
 	setNotesActiveStatus(id) {
@@ -123,6 +150,25 @@ export default class UI {
 		});
 	}
 
+	copyToClipboard(textToCopy) {
+		if (navigator.clipboard && window.isSecureContext) {
+			return navigator.clipboard.writeText(textToCopy);
+		} else {
+			let textArea = document.createElement('textarea');
+			textArea.value = textToCopy;
+			textArea.style.position = 'fixed';
+			textArea.style.left = '-999999px';
+			textArea.style.top = '-999999px';
+			document.body.appendChild(textArea);
+			textArea.focus();
+			textArea.select();
+			return new Promise((res, rej) => {
+				document.execCommand('copy') ? res() : rej();
+				textArea.remove();
+			});
+		}
+	}
+
 	createContextMenu(e, note) {
 		const contextMenuTemplate =
 			this.contextMenuTemplate.content.firstElementChild;
@@ -130,6 +176,7 @@ export default class UI {
 
 		if (note.dataset.type === 'todo') {
 			getEl('#copy-description-btn', contextMenu).remove();
+			getEl('#edit-description-btn', contextMenu).remove();
 		}
 
 		const y = e.clientY;
@@ -163,14 +210,17 @@ export default class UI {
 		const noteId = note.id;
 
 		switch (e.target.closest('button').id) {
-			case 'delete-note-btn':
+			case 'remove-note-btn':
 				this.actions.removeNote(noteId);
 				note.remove();
-				this.isContextMenuActive = false;
+				this.createNotification('Note removed');
+				if (this.actions.getItemsCount().notesQuantity < 1) {
+					this.startScreen.classList.remove('hiden');
+				}
 				break;
-			case 'choose-text-btn':
+			case 'select-text-btn':
 				this.contextMenu.remove();
-				this.chooseNoteText(noteId);
+				this.selectNoteText(noteId);
 				break;
 			case 'complete-note-btn':
 				if (note.classList.contains('completed')) {
@@ -178,21 +228,31 @@ export default class UI {
 					this.actions.toggleCompleteStatus(noteId);
 					this.setNotesInactiveStatus(noteId);
 				} else {
-					const options = [...getElements('.note-option', note)].map(
-						(op) => op.id
-					);
+					let options = [...getElements('.note-option', note)];
+
+					if (options.length > 1) {
+						options = options.map((op) => op.id);
+					}
 					this.actions.toggleCompleteStatus(noteId, options);
 					this.setNotesActiveStatus(noteId);
 				}
 				break;
+			case 'edit-title-btn':
+				this.editNote(getEl('.note__title', note));
+				this.contextMenu.remove();
+				break;
+			case 'edit-description-btn':
+				this.editNote(getEl('.note__description', note));
+				this.contextMenu.remove();
+				break;
 			case 'copy-description-btn':
 				this.contextMenu.remove();
-				navigator.clipboard.writeText(getEl('.note__description').textContent);
+				this.copyToClipboard(getEl('.note__description', note).textContent);
 				this.createNotification('Description copied!');
 				break;
 			case 'copy-title-btn':
 				this.contextMenu.remove();
-				navigator.clipboard.writeText(getEl('.note__title').textContent);
+				this.copyToClipboard(getEl('.note__title', note).textContent);
 				this.createNotification('Title copied!');
 				break;
 		}
@@ -207,12 +267,19 @@ export default class UI {
 				break;
 			}
 			case 'remove-all-btn': {
+				if (!confirm('Are You sure You want to delete all notes?')) {
+					return;
+				}
 				this.actions.removeAll();
 				this.noteList.innerHTML = '';
+				this.startScreen.classList.remove('hiden');
 				this.createNotification('All notes removed', 'succsess');
 				break;
 			}
 			case 'remove-completed-btn': {
+				if (!confirm('Are You sure You want to delete completed notes?')) {
+					return;
+				}
 				this.actions.removeCompleted();
 				getElements('.note', this.noteList).forEach((note) => {
 					if (note.classList.contains('completed')) {
@@ -241,12 +308,13 @@ export default class UI {
 		}
 	}
 
-	chooseNoteText(id) {
+	selectNoteText(id) {
 		const note = getEl(`#${id}`);
 
 		this.noteDetail.innerHTML = '';
 
 		const noteClone = note.cloneNode(true);
+		noteClone.classList.add('select');
 		this.noteDetail.appendChild(noteClone);
 
 		flipNotes(note, noteClone, () => {
@@ -300,16 +368,53 @@ export default class UI {
 		const target = e.target;
 
 		switch (target.id) {
+			case 'settings-btn':
+				if (this.settingsMenu.classList.contains('expand')) {
+					this.settingsMenu.classList.remove('expand');
+					this.settingsMenu.classList.add('shrink');
+				} else {
+					this.settingsMenu.classList.remove('shrink');
+					this.settingsMenu.classList.add('expand');
+				}
+				target.classList.toggle('active');
+				break;
 			case 'change-theme-btn':
-				document.body.classList.toggle('dray-theme');
+				this.backdrop.classList.add('shown');
+				this.showThemeModal();
+				break;
+			case 'info-btn':
+				this.backdrop.classList.add('shown');
+				this.infoBlock.classList.add('shown');
+				break;
+			case 'kitty-btn':
+				if (this.kitty.classList.contains('.shown')) {
+					return;
+				}
+				this.kitty.classList.add('shown');
+				setTimeout(() => {
+					this.kitty.classList.remove('shown');
+				}, 2000);
 		}
+	}
+
+	showThemeModal() {
+		this.themeModal.classList.add('shown');
 	}
 
 	// bind events to DOM elements
 
-	connectSettingsBtn() {
-		this.settingsBtn.addEventListener('click', (e) => {
+	connectSettingsMenu() {
+		this.settingsMenu.addEventListener('click', (e) => {
 			this.settingsMenuHandler(e);
+		});
+	}
+
+	connectThemeModal() {
+		this.themeModal.addEventListener('click', (e) => {
+			if (e.target.checked) {
+				this.actions.setTheme(e.target.id);
+				document.body.className = `${e.target.id}`;
+			}
 		});
 	}
 
@@ -347,19 +452,22 @@ export default class UI {
 					note.classList.remove('hide');
 				}
 			});
+
+			this.resizeAllNotes();
 		});
 	}
 
-	connectShowFormBtn() {
-		this.createNoteBtn.addEventListener('click', () => {
-			this.form.classList.add('shown');
+	connectShowFormBtn(btn) {
+		btn.addEventListener('click', () => {
 			this.backdrop.classList.add('shown');
+			this.form.classList.add('shown');
 		});
 	}
 
 	connectTabsHandler() {
 		this.tabs.addEventListener('click', (e) => {
 			const target = e.target;
+
 			if (target.closest('.notes-tab')) {
 				getElements('.notes-tab').forEach((tab) =>
 					tab.classList.remove('active')
@@ -367,16 +475,24 @@ export default class UI {
 
 				target.classList.add('active');
 
-				const type = target.dataset.type;
+				getEl('span', this.tabsBtn).textContent = target.textContent;
 
-				this.filterNotesByType(type);
+				this.filterNotesByType(target.dataset.type);
 			}
 		});
 	}
 
 	connectDoubleClickToNoteList() {
 		this.noteList.addEventListener('dblclick', (e) => {
-			this.editNoteHandler(e);
+			const target = e.target;
+
+			if (
+				target.closest('.note') &&
+				(target.classList.contains('note__description') ||
+					target.classList.contains('note__title'))
+			) {
+				this.editNote(target);
+			}
 		});
 	}
 
@@ -386,6 +502,10 @@ export default class UI {
 				this.contextMenu.remove();
 			}
 
+			if (e.target.classList.contains('close-btn')) {
+				this.backdrop.classList.remove('shown');
+			}
+
 			if (!e.target.closest('.header__edit')) {
 				getEl('.header__edit').classList.remove('active');
 			}
@@ -393,6 +513,25 @@ export default class UI {
 			if (e.target.classList.contains('backdrop')) {
 				this.backdrop.classList.remove('shown');
 				this.form.classList.remove('shown');
+				this.themeModal.classList.remove('shown');
+				this.infoBlock.classList.remove('shown');
+			}
+
+			if (
+				this.settingsMenu.classList.contains('expand') &&
+				!e.target.closest('.header__settings')
+			) {
+				this.settingsMenu.classList.remove('expand');
+				this.settingsMenu.classList.add('shrink');
+				this.settingsMenu.firstElementChild.classList.remove('active');
+			}
+
+			if (
+				window.matchMedia('(max-width: 640px)') &&
+				!e.target.closest('.tabs-container')
+			) {
+				this.tabs.classList.remove('active');
+				this.tabsBtn.classList.remove('active');
 			}
 		});
 	}
@@ -466,8 +605,9 @@ export default class UI {
 		this.noteList.addEventListener(
 			'blur',
 			(e) => {
-				const id = e.target.closest('.note').id;
-				const newValue = e.target.value;
+				const target = e.target;
+				const id = target.closest('.note').id;
+				const newValue = target.value;
 
 				if (newValue.trim() === '') {
 					return;
@@ -475,10 +615,12 @@ export default class UI {
 
 				if (e.target.closest('.note__title')) {
 					this.actions.saveNoteChanges(id, newValue, 'title');
-					this.editNoteFinished(id, e.target.parentNode);
-				} else {
+					this.editNoteFinished(id, target.parentNode);
+				}
+
+				if (e.target.closest('.note__description')) {
 					this.actions.saveNoteChanges(id, newValue, 'description');
-					this.editNoteFinished(id, e.target.parentNode);
+					this.editNoteFinished(id, target.parentNode);
 				}
 			},
 			true
@@ -496,15 +638,21 @@ export default class UI {
 		});
 	}
 
-	// first render
+	connectMansornyLayoutResize() {
+		let timer;
+		window.addEventListener('resize', () => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				this.resizeAllNotes();
+			}, 200);
+		});
+	}
 
-	renderNotes(store) {
-		if (store.length > 0) {
-			this.noteList.innerHTML = '';
-			store.forEach((itemData) => {
-				this.createNote(itemData);
-			});
-		}
+	connectTabsBtn() {
+		this.tabsBtn.addEventListener('click', (e) => {
+			this.tabsBtn.classList.toggle('active');
+			this.tabsBtn.nextElementSibling.classList.toggle('active');
+		});
 	}
 
 	bindEventsToElements() {
@@ -518,7 +666,31 @@ export default class UI {
 		this.connectEditNoteSaveHandler();
 		this.connectEditNoteCancel();
 		this.connectSubmitFormHandler();
-		this.connectShowFormBtn();
-		this.connectSettingsBtn();
+		this.connectShowFormBtn(this.createNoteBtn);
+		this.connectShowFormBtn(getEl('button', this.startScreen));
+		this.connectTabsBtn();
+		this.connectSettingsMenu();
+		this.connectThemeModal();
+		this.connectMansornyLayoutResize();
+	}
+
+	// first render
+
+	init(store) {
+		const currentTheme = this.actions.getTheme();
+
+		if (currentTheme !== null) {
+			document.body.className = currentTheme;
+			getEl(`#${currentTheme}`).checked = true;
+		}
+
+		if (store.length > 0) {
+			this.noteList.innerHTML = '';
+			store.forEach((itemData) => {
+				this.createNote(itemData);
+			});
+		}
+
+		this.resizeAllNotes();
 	}
 }

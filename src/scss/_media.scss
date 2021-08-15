@@ -1,0 +1,139 @@
+@media (max-width: 968px) {
+	.info-block {
+		.mobile {
+			display: block;
+		}
+
+		.desktop {
+			display: none;
+		}
+	}
+}
+
+@media (max-width: 840px) {
+	.options-control {
+		input {
+			margin-right: 0;
+		}
+	}
+}
+
+@media (max-width: 640px) {
+	.tabs-container {
+		position: relative;
+		width: 140px;
+		margin: 0;
+		margin-left: auto;
+		margin-bottom: 4rem;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.tabs-btn {
+		display: block;
+	}
+
+	.notes-tabs {
+		position: absolute;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+		padding: 0 0.5rem;
+		top: 45px;
+		background: var(--form-gradient);
+		border: 1px solid var(--active-color-dark);
+		border-radius: 8px;
+		opacity: 0;
+		overflow: hidden;
+		z-index: -1;
+		transition: all 0.3s ease-out;
+		transform: translateY(-50%);
+	}
+
+	.notes-tab {
+		font-size: 1rem;
+		padding: 0.8rem 0;
+		width: 100%;
+		text-align: center;
+		border-bottom: 1px solid var(--active-color-dark);
+		&:before {
+			display: none;
+		}
+	}
+
+	.notes-tab:last-child {
+		border: none;
+		margin: 0;
+	}
+
+	.notes-tabs.active {
+		opacity: 1;
+		transform: translateY(0);
+		z-index: 10;
+	}
+
+	.main {
+		padding-top: 2rem;
+	}
+
+	.notes {
+		padding-bottom: 3rem;
+	}
+
+	.note {
+		user-select: none;
+	}
+	
+	.header__edit {
+		position: absolute;
+		left: 16px;
+		top: 88px;
+		width: 140px;
+		.edit-btn {
+			width: 100%;
+			font-family: 'Monserrat-Normal', sans-serif;
+			font-size: 1rem;
+			background: var(--main-color);
+			color: var(--text-color);
+			border-radius: 8px;
+			padding: 0.8rem 1rem;
+			border: 1px solid var(--active-color-dark);
+		}
+
+		.edit-menu {
+			width: 100%;
+			left: 70px;
+			top: 25px;
+			background: var(--main-gradient);
+			&__btn {
+				padding: 0.8rem 0;
+			}
+		}
+	}
+
+	.search-input {
+		font-size: 0.8rem;
+		padding-top: 0.4rem;
+		padding-bottom: 0.4rem;
+	}
+
+	.search-input:focus {
+		width: 200px;
+	}
+}
+
+@media (max-width: 420px) {
+	.search-input:focus {
+		width: 150px;
+	}
+
+	.start-screen {
+		&__rhombus {
+			left: 70%;
+		}
+
+		&__circle {
+			left: 15%;
+		}
+	}
+}
