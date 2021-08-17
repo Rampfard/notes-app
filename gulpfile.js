@@ -156,7 +156,7 @@ function watching() {
 	watch(['src/js/**/*.js', '!src/js/*.min.js'], scripts);
 	watch(['src/fonts/*.*'], copyFonts);
 	watch(['src/img/**/*.*'], copyImages);
-	watch(['src/*.html']).on('change', copyHTML);
+	watch(['src/*.html']).on('change', copyHTMLAndFavicon);
 }
 
 exports.styles = styles;
