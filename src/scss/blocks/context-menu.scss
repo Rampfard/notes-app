@@ -18,13 +18,13 @@
 		padding: 0.8rem 0;
 		border-bottom: 1px solid var(--active-color-dark);
 		color: var(--text-color);
-		font-family: 'Monserrat-Medium';
+		font-family: 'Poppins-Regular';
 		transition: all 0.3s ease-out;
 		&:hover,
 		&:active {
 			color: var(--active-color);
 			path {
-				stroke: var(--active-color)
+				stroke: var(--active-color);
 			}
 		}
 		&:last-child {
@@ -39,7 +39,7 @@
 		margin-right: 0.4rem;
 		path {
 			stroke: var(--text-color);
-			transition: stroke .3s ease-out;
+			transition: stroke 0.3s ease-out;
 		}
 	}
 
